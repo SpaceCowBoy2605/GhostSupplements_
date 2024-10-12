@@ -1,5 +1,8 @@
 package com.ghostappi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +15,8 @@ public class Nutrient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idNutrient")
+    @JsonProperty("idNutrient")
     private Integer idNutrient;
     private String name;
 
