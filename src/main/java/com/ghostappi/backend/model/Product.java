@@ -22,59 +22,77 @@ public class Product {
     @JsonProperty("idProduct")
     private Integer idProduct;
     
+    @JsonProperty("comercialName")
     @Column(nullable = false, length = 250)
     private String comercialName;
     
+    @JsonProperty("price")
     @Column(nullable = false)
     private BigDecimal price;
 
+    @JsonProperty("stock")
     @Column(nullable = false)
     private Short stock;
 
+    @JsonProperty("servingSize")
     @Column(nullable = false)
     private Integer servingSize;
 
+    @JsonProperty("unitServingSize")
     @Column(nullable = false, length = 8)
     private String unitServingSize;
 
+    @JsonProperty("servings")
     @Column(nullable = false)
     private Short servings;
 
+    @JsonProperty("netContent")
     @Column(nullable = false)
     private Short netContent;
 
+    @JsonProperty("unitNetContent")
     @Column(nullable = false, length = 8)
     private String unitNetContent;
 
+    @JsonProperty("presentation")
     @Column(nullable = false, length = 50)
     private String presentation;
 
+    @JsonProperty("description")
     @Column(nullable = false, length = 500)
     private String description;
 
+    @JsonProperty("caducity")
     @Column(nullable = false)
     private Date caducity;
 
+    @JsonProperty("lote")
     @Column(nullable = false, length = 25)
     private String lote;
 
+    @JsonProperty("flavor")
     @Column(nullable = false, length = 100)
     private String flavor;
 
+    @JsonProperty("productRecomendation")
     @Column(nullable = false, length = 255)
     private String productRecomendation;
 
+    @JsonProperty("imgProductPath")
     @Column(nullable = false, length = 255)
     private String imgProductPath;
 
-    // @Column(nullable = false)
-    // private Integer idCategory;
+    @JsonProperty("idCategory")
+    @Column(nullable = false)
+    private Integer idCategory;
 
-    // @Column(nullable = false)
-    // private Integer idBrand;
+    @JsonProperty("idBrand")
+    @Column(nullable = false)
+    private Integer idBrand;
 
-    // @Column(nullable = false)
-    // private Integer idAdministrationVia;
+    @JsonProperty("idAdministrationVia")
+    @Column(nullable = false)
+    private Integer idAdministrationVia;
 
     public Product() {
     }
@@ -82,7 +100,7 @@ public class Product {
     public Product(Integer idProduct, String comercialName, BigDecimal price, Short stock, Integer servingSize,
             String unitServingSize, Short servings, Short netContent, String unitNetContent, String presentation,
             String description, Date caducity, String lote, String flavor, String productRecomendation,
-            String imgProductPath/* , Integer idCategory, Integer idBrand, Integer idAdministrationVia*/) {
+            String imgProductPath , Integer idCategory, Integer idBrand, Integer idAdministrationVia) {
         this.idProduct = idProduct;
         this.comercialName = comercialName;
         this.price = price;
@@ -99,9 +117,33 @@ public class Product {
         this.flavor = flavor;
         this.productRecomendation = productRecomendation;
         this.imgProductPath = imgProductPath;
-        // this.idCategory = idCategory;
-        // this.idBrand = idBrand;
-        // this.idAdministrationVia = idAdministrationVia;
+        this.idCategory = idCategory;
+        this.idBrand = idBrand;
+        this.idAdministrationVia = idAdministrationVia;
+    }
+
+    public Integer getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(Integer idProduct) {
+        this.idProduct = idProduct;
+    }
+
+    public String getComercialName() {
+        return comercialName;
+    }
+
+    public void setComercialName(String comercialName) {
+        this.comercialName = comercialName;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Short getStock() {
@@ -199,4 +241,14 @@ public class Product {
     public void setProductRecomendation(String productRecomendation) {
         this.productRecomendation = productRecomendation;
     }
+
+    public String getImgProductPath() {
+        return imgProductPath;
+    }
+
+    public void setImgProductPath(String imgProductPath) {
+        this.imgProductPath = imgProductPath;
+    }
+
+    
 }
