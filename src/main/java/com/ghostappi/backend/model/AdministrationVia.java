@@ -12,33 +12,33 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "nutrient")
-public class Nutrient {
+@Table(name = "administrationvia")
+public class AdministrationVia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idNutrient")
-    @JsonProperty("idNutrient")
-    private Integer idNutrient;
+    @Column(name = "idAdministrationVia")
+    @JsonProperty("idAdministrationVia")
+    private Integer idAdministrationVia;
+
     @NotBlank(message = "The name must no be null and containn at least one character")
-    @Size(min = 1, max = 100, message = "The name must be almost 1 character and 100 characters at most")
-    @JsonProperty("name")
+    @Size(min = 1, max = 50, message = "The name must be almost 1 character and 50 characters at most")
     private String name;
 
-    public Nutrient() {
+    public AdministrationVia() {
     }
 
-    public Nutrient(Integer idNutrient, String name) {
-        this.idNutrient = idNutrient;
+    public AdministrationVia(Integer idAdministrationVia, String name) {
+        this.idAdministrationVia = idAdministrationVia;
         this.name = name;
     }
 
-    public Integer getIdNutrient() {
-        return idNutrient;
+    public Integer getIdAdministrationVia() {
+        return idAdministrationVia;
     }
 
-    public void setIdNutrient(Integer idNutrient) {
-        this.idNutrient = idNutrient;
+    public void setIdAdministrationVia(Integer idAdministrationVia) {
+        this.idAdministrationVia = idAdministrationVia;
     }
 
     public String getName() {
@@ -48,4 +48,6 @@ public class Nutrient {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }
