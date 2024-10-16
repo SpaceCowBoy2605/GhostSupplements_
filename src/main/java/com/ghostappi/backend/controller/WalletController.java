@@ -25,7 +25,7 @@ import com.ghostappi.backend.model.Wallet;
 import com.ghostappi.backend.service.WalletService;
 
 @RestController
-@RequestMapping("/wallet")
+@RequestMapping("/Wallet")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 public class WalletController {
     @Autowired
