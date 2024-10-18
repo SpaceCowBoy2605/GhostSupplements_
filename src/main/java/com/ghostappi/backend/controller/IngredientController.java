@@ -42,7 +42,7 @@ import com.ghostappi.backend.model.Ingredient;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "Ingredient", description = "APIs related to Ingredient")
+@Tag(name = "Ingredients", description = "Methods required to manage inngredients")
 
 public class IngredientController {
 
@@ -66,7 +66,7 @@ public class IngredientController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     @GetMapping("/{idIngredient}")
-    public Ingredient getById(@PathVariable Integer id){
+    public Ingredient getById(@RequestParam Integer id){
         return ingredientService.getById(id);
     }
 

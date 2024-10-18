@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.ghostappi.backend.repository.ProductRepository;
 import com.ghostappi.backend.model.Product;
+
 import jakarta.transaction.TransactionScoped;
 
 @Service

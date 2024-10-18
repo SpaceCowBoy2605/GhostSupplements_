@@ -2,7 +2,10 @@ package com.ghostappi.backend.controller;
 
 import java.util.List;
 
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.ghostappi.backend.service.CategoryService;
 import com.ghostappi.backend.model.Category;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("categories")
@@ -28,7 +35,7 @@ import com.ghostappi.backend.model.Category;
         RequestMethod.POST,
         RequestMethod.PUT,
         RequestMethod.DELETE })
-@Tag(name = "Category", description = "APIs for managing categories")
+@Tag(name = "Categories", description = "Methods required to manage categories")
 public class CategoryController {
 
     @Autowired
@@ -62,10 +69,20 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
     })
-    @GetMapping("{id}")
+    @GetMapping("{idCategory}")
     public Category getById(@RequestParam Integer id) {
         return service.getById(id);
     }
 
-    
+    @PutMapping("{idCategory}")
+    public ResponseEntity<Category> update(@PathVariable Integer idCategory, @RequestBody Category category) {
+        if (!Objects.equals(category.getIdCategory(), idCategory)) {
+            throw new IllegalArgumentException("The provider identifiers do not match");
+        }
+        Category existingCategory = service.getById(idCategory);
+        existingCategory.setName(category.getName());
+        service.save(existingCategory);
+        return new ResponseEntity<>(existingCategory,HttpStatus.OK);
+
+    }
 }

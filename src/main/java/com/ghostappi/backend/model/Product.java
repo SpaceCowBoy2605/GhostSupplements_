@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "product")
@@ -21,11 +23,13 @@ public class Product {
     @Column(name = "idProduct")
     @JsonProperty("idProduct")
     private Integer idProduct;
-    
+
     @JsonProperty("comercialName")
     @Column(nullable = false, length = 250)
+    @NotBlank(message = "The comercial name must no be null and containt at least one character")
+    @Size(min = 1, max = 255, message = "The trade name must be greater than 1 character and less than 100 characters.")
     private String comercialName;
-    
+
     @JsonProperty("price")
     @Column(nullable = false)
     private BigDecimal price;
@@ -100,7 +104,7 @@ public class Product {
     public Product(Integer idProduct, String comercialName, BigDecimal price, Short stock, Integer servingSize,
             String unitServingSize, Short servings, Short netContent, String unitNetContent, String presentation,
             String description, Date caducity, String lote, String flavor, String productRecomendation,
-            String imgProductPath , Integer idCategory, Integer idBrand, Integer idAdministrationVia) {
+            String imgProductPath, Integer idCategory, Integer idBrand, Integer idAdministrationVia) {
         this.idProduct = idProduct;
         this.comercialName = comercialName;
         this.price = price;
@@ -149,95 +153,95 @@ public class Product {
     public Short getStock() {
         return stock;
     }
-    
+
     public void setStock(Short stock) {
         this.stock = stock;
     }
-    
+
     public Integer getServingSize() {
         return servingSize;
     }
-    
+
     public void setServingSize(Integer servingSize) {
         this.servingSize = servingSize;
     }
-    
+
     public String getUnitServingSize() {
         return unitServingSize;
     }
-    
+
     public void setUnitServingSize(String unitServingSize) {
         this.unitServingSize = unitServingSize;
     }
-    
+
     public Short getServings() {
         return servings;
     }
-    
+
     public void setServings(Short servings) {
         this.servings = servings;
     }
-    
+
     public Short getNetContent() {
         return netContent;
     }
-    
+
     public void setNetContent(Short netContent) {
         this.netContent = netContent;
     }
-    
+
     public String getUnitNetContent() {
         return unitNetContent;
     }
-    
+
     public void setUnitNetContent(String unitNetContent) {
         this.unitNetContent = unitNetContent;
     }
-    
+
     public String getPresentation() {
         return presentation;
     }
-    
+
     public void setPresentation(String presentation) {
         this.presentation = presentation;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public Date getCaducity() {
         return caducity;
     }
-    
+
     public void setCaducity(Date caducity) {
         this.caducity = caducity;
     }
-    
+
     public String getLote() {
         return lote;
     }
-    
+
     public void setLote(String lote) {
         this.lote = lote;
     }
-    
+
     public String getFlavor() {
         return flavor;
     }
-    
+
     public void setFlavor(String flavor) {
         this.flavor = flavor;
     }
-    
+
     public String getProductRecomendation() {
         return productRecomendation;
     }
-    
+
     public void setProductRecomendation(String productRecomendation) {
         this.productRecomendation = productRecomendation;
     }
@@ -250,5 +254,4 @@ public class Product {
         this.imgProductPath = imgProductPath;
     }
 
-    
 }

@@ -38,7 +38,7 @@ import com.ghostappi.backend.model.Product;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "Product", description = "APIs related to Product")
+@Tag(name = "Products", description = "Methods required to manage products")
 
 public class ProductController {
 

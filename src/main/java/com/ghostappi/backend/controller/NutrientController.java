@@ -39,7 +39,7 @@ import com.ghostappi.backend.model.Nutrient;
         RequestMethod.PUT
 })
 
-@Tag(name = "Nutrient", description = "APIs related to Nutrient")
+@Tag(name = "Nutrients", description = "Methods required to manage nutrients")
 
 public class NutrientController {
 
