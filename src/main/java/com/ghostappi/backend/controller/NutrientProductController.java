@@ -1,6 +1,7 @@
 package com.ghostappi.backend.controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,11 @@ import com.ghostappi.backend.model.NutrientProduct;
 
 @RestController
 @RequestMapping("nutrientProructs")
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(origins = "*", methods = {
+        RequestMethod.GET,
+        RequestMethod.POST,
+        RequestMethod.PUT,
+        RequestMethod.DELETE })
 @Tag(name = "NutrientProduct", description = "APIs for managing nutrient products")
 public class NutrientProductController {
 
@@ -28,10 +33,10 @@ public class NutrientProductController {
     private NutrientProductService service;
 
     @Operation(summary = "List all nutrient products")
-    @ApiResponse(responseCode = "200", description = "Found all nutrient products" , 
-        content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NutrientProduct.class)))})
+    @ApiResponse(responseCode = "200", description = "Found all nutrient products", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NutrientProduct.class))) })
     @GetMapping
-    public List<NutrientProduct> getAll(){
+    public List<NutrientProduct> getAll() {
         return service.getAll();
     }
 }
