@@ -1,6 +1,7 @@
 package com.ghostappi.backend.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,16 @@ public class CouponService {
 	}
 
 	public Coupon getByidCoupon(Integer idCoupon) {
-		return repo.findById(idCoupon).get();
+		return repo.findById(idCoupon)
+				.orElseThrow(() -> new NoSuchElementException("The requested item is not registered"));
 	}
 
 	public void delete(Integer idCoupon) {
+		if (!repo.existsById(idCoupon)) {
+			throw new NoSuchElementException("The requested item is not registered");
+		}
 		repo.deleteById(idCoupon);
 	}
+
 }
 

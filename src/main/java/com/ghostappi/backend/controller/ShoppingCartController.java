@@ -1,6 +1,5 @@
 package com.ghostappi.backend.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ghostappi.backend.service.ShoppingCartService;
 import com.ghostappi.backend.model.ShoppingCart;
+import com.ghostappi.backend.service.ShoppingCartService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,77 +26,59 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 @RequestMapping("shoppingcart")
-@Tag(name = "Controller of shopping carts")
+@Tag(name = "Shopping Carts")
 public class ShoppingCartController {
-	@Autowired
-	private ShoppingCartService shoppingCartService;
 
-	@Operation(summary = "Register a shopping cart")
-	@PostMapping
-	public ResponseEntity<String> createShoppingCart(@RequestBody ShoppingCart shoppingCart) {
-		shoppingCartService.saveShoppingCart(shoppingCart);
-		return new ResponseEntity<>("Saved record", HttpStatus.OK);
-	}
+    @Autowired
+    private ShoppingCartService shoppingCartService;
 
-	@Operation(summary = "Get a shopping cart by his id of the shopping cart")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Coupon found", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ShoppingCart.class)) }),
-			@ApiResponse(responseCode = "400", description = "Invalid id of coupon supplied", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Coupon not found", content = @Content) })
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getShoppingCartById(@PathVariable Integer id) {
-		ShoppingCart shoppingCart = shoppingCartService.getShoppingCartByCustomId(id);
-		if (shoppingCart != null) {
-			return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("Shopping Cart not found", HttpStatus.NOT_FOUND);
-		}
-	}
+    @ApiResponse(responseCode = "200", description = "Found Shopping Carts", content = {
+        @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShoppingCart.class))) })
+    @GetMapping()
+    public Iterable<ShoppingCart> getAll() {
+        return shoppingCartService.getAll();
+    }
 
-	@GetMapping("/customId/{idShoppingCart}")
-	public ResponseEntity<?> getShoppingCartByCustomId(@PathVariable Integer idShoppingCart) {
-		ShoppingCart shoppingCart = shoppingCartService.getShoppingCartByCustomId(idShoppingCart);
-		if (shoppingCart != null) {
-			return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("Shopping Cart not found", HttpStatus.NOT_FOUND);
-		}
-	}
+    @Operation(summary = "Get a shopping cart by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Shopping cart found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ShoppingCart.class)) }),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Shopping cart not found", content = @Content) })
+    @GetMapping("{idShoppingCart}")
+    public ShoppingCart getById(@PathVariable Integer idShoppingCart) {
+        return shoppingCartService.getById(idShoppingCart);
+    }
 
-	@ApiResponse(responseCode = "200", description = "Found Shooping Carts", content = {
-			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ShoppingCart.class))) })
-	@GetMapping
-	public ResponseEntity<List<ShoppingCart>> getAllShoppingCarts() {
-		List<ShoppingCart> carts = shoppingCartService.getAllShoppingCarts();
-		return new ResponseEntity<>(carts, HttpStatus.OK);
-	}
+    @Operation(summary = "Register a new shopping cart")
+    @PostMapping()
+    public ResponseEntity<String> add(@RequestBody ShoppingCart resource) {
+        shoppingCartService.add(resource);
+        return new ResponseEntity<String>("Saved record", HttpStatus.OK);
+    }
 
-	@Operation(summary = "Update a shooping cart with his id")
-	@PutMapping("/{id}")
-	public ResponseEntity<?> updateShoppingCartById(@PathVariable Integer id, @RequestBody ShoppingCart updatedCart) {
-		ShoppingCart shoppingCart = shoppingCartService.updateShoppingCart(id, updatedCart);
-		if (shoppingCart != null) {
-			return new ResponseEntity<>(shoppingCart, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("Shopping Cart not found", HttpStatus.NOT_FOUND);
+    @Operation(summary = "Update a shopping cart by its id")
+    @PutMapping("{idShoppingCart}")
+    public ResponseEntity<String> update(@RequestBody ShoppingCart resource, @PathVariable Integer idShoppingCart) {
+        shoppingCartService.update(resource, idShoppingCart);
+        return new ResponseEntity<String>("Updated record", HttpStatus.OK);
+    }
 
-		}
-	}
+    @Operation(summary = "Delete a shopping cart by its id")
+    @DeleteMapping("{idShoppingCart}")
+    public ResponseEntity<String> delete(@PathVariable Integer idShoppingCart) {
+        shoppingCartService.delete(idShoppingCart);
+        return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
+    }
 
-	@Operation(summary = "Delete a shopping cart with his id")
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteShoppingCartById(@PathVariable Integer id) {
-		try {
-			shoppingCartService.deleteShoppingCartByCustomId(id);
-			return new ResponseEntity<>("Delete record", HttpStatus.OK);
-		} catch (EntityNotFoundException e) {
-
-			return new ResponseEntity<>("Shopping Cart not found", HttpStatus.NOT_FOUND);
-		}
-	}
-
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

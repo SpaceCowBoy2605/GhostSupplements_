@@ -1,45 +1,61 @@
 package com.ghostappi.backend.service;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import com.ghostappi.backend.model.ShoppingCart;
 import com.ghostappi.backend.repository.ShoppingCartRepository;
 
 @Service
-
 public class ShoppingCartService {
-	@Autowired
-	private ShoppingCartRepository shoppingCartRepository;
+    @Autowired
+    private ShoppingCartRepository shoppingCartRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-	public void saveShoppingCart(ShoppingCart shoppingCart) {
-		shoppingCartRepository.save(shoppingCart);
-	}
+    public List<ShoppingCart> getAll() {
+        return mongoTemplate.findAll(ShoppingCart.class);
+    }
 
-	public ShoppingCart getShoppingCartByCustomId(Integer idShoppingCart) {
-		return shoppingCartRepository.findByIdShoppingCart(idShoppingCart);
-	}
+    public ShoppingCart getById(Integer idShoppingCart) {
+        Query query = new Query(Criteria.where("idShoppingCart").is(idShoppingCart));
+        ShoppingCart cart = mongoTemplate.findOne(query, ShoppingCart.class);
+        if (cart == null) {
+            throw new NoSuchElementException("Shopping cart with id " + idShoppingCart + " not found");
+        }
+        return cart;
+    }
 
-	public List<ShoppingCart> getAllShoppingCarts() {
-		return shoppingCartRepository.findAll();
-	}
+    public void add(ShoppingCart resource) {
+        mongoTemplate.save(resource);
+    }
 
-	public ShoppingCart updateShoppingCart(Integer idhShoppingCart, ShoppingCart shoppingCart) {
-		ShoppingCart existingCart = shoppingCartRepository.findByIdShoppingCart(idhShoppingCart);
-		if (existingCart != null) {
-			existingCart.setIdShoppingCart(idhShoppingCart);
-			existingCart.setQuantity(shoppingCart.getQuantity());
-			existingCart.setTotal(shoppingCart.getTotal());
-			existingCart.setIdCustomer(shoppingCart.getIdCustomer());
-			return shoppingCartRepository.save(existingCart);
-		}
-		return null;
-	}
+    public void update(ShoppingCart resource, Integer idShoppingCart) {
+        Query query = new Query(Criteria.where("idShoppingCart").is(idShoppingCart));
+        ShoppingCart existingCart = mongoTemplate.findOne(query, ShoppingCart.class);
+        if (existingCart == null) {
+            throw new NoSuchElementException("Shopping cart with id " + idShoppingCart + " not found");
+        }
+        Update update = new Update()
+                .set("quantity", resource.getQuantity())
+                .set("total", resource.getTotal());
+        mongoTemplate.updateFirst(query, update, ShoppingCart.class);
+    }
 
-	public void deleteShoppingCartByCustomId(Integer idShoppingCart) {
-		shoppingCartRepository.deleteByIdShoppingCart(idShoppingCart);
-	}
-
+    public boolean delete(Integer idShoppingCart) {
+        Query query = new Query(Criteria.where("idShoppingCart").is(idShoppingCart));
+        ShoppingCart cart = mongoTemplate.findOne(query, ShoppingCart.class);
+        if (cart == null) {
+            throw new NoSuchElementException("Shopping cart with id " + idShoppingCart + " not found");
+        }
+        mongoTemplate.remove(query, ShoppingCart.class);
+        return true;
+    }
 }

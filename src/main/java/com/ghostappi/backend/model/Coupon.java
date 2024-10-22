@@ -4,144 +4,121 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.CascadeType;
+
+
 
 //import com.fasterxml.jackson.annotation.JsonProperty;
 
-//import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-//import jakarta.persistence.JoinColumn;
-//import jakarta.persistence.OneToOne;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "Coupon")
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idCoupon")
+    @JsonProperty("idCoupon")
     private Integer idCoupon;
-    @NotBlank
-    @Size(min = 1, max = 10)
+
+    @NotBlank(message = "The code discount must no be null and containn at least one character")
+    @Size(min = 1, max = 10,message = "The name must be almost 1 character and 10 characters at most")
+    @Column(name = "codeDiscount")
+    @JsonProperty("codeDiscount")
     private String codeDiscount;
-    @NotBlank
-    @Size(min = 1, max = 255)
+
+    @NotBlank(message = "The description must no be null and containn at least one character")
+    @Size(min = 1, max = 255, message = "The name must be almost 1 character and 255 characters at most")
+    @Column(name = "description")
+    @JsonProperty("description")
     private String description;
+
+    @Column(name = "initDate")
+    @JsonProperty("initDate")
     private Date initDate;
+
+    @Column(name = "expirationDate")
+    @JsonProperty("expirationDate")
+    @Future
     private Date expirationDate;
+
     @Min(1)
     @Max(100)
+    @Column(name = "discountPercentage")
+    @JsonProperty("discountPercentage")
     private Integer discountPercentage;
-    //@Id
-    //@OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "idCategory", referencedColumnName = "idCategory")
-    //@JsonProperty("idCategory")
-    //private Category idCategory
-    private Integer idCategory;
 
-    /**
-     * @return the idCoupon
-     */
+    @OneToOne
+    @JoinColumn(name = "idCategory", referencedColumnName = "idCategory")
+    @JsonProperty("idCategory")
+    private Category idCategory;
+
     public Integer getIdCoupon() {
         return idCoupon;
     }
 
-    /**
-     * @param idCoupon the idCoupon to set
-     */
     public void setIdCoupon(Integer idCoupon) {
         this.idCoupon = idCoupon;
     }
 
-    /**
-     * @return the codeDiscount
-     */
     public String getCodeDiscount() {
         return codeDiscount;
     }
 
-    /**
-     * @param codeDiscount the codeDiscount to set
-     */
     public void setCodeDiscount(String codeDiscount) {
         this.codeDiscount = codeDiscount;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
         return description;
     }
 
-    /**
-     * @param description the description to set
-     */
     public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
-     * @return the initDate
-     */
     public Date getInitDate() {
         return initDate;
     }
 
-    /**
-     * @param initDate the initDate to set
-     */
     public void setInitDate(Date initDate) {
         this.initDate = initDate;
     }
 
-    /**
-     * @return the expirationDate
-     */
     public Date getExpirationDate() {
         return expirationDate;
     }
 
-    /**
-     * @param expirationDate the expirationDate to set
-     */
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    /**
-     * @return the discountPercentage
-     */
     public Integer getDiscountPercentage() {
         return discountPercentage;
     }
 
-    /**
-     * @param discountPercentage the discountPercentage to set
-     */
     public void setDiscountPercentage(Integer discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
 
-    /**
-     * @return the idCategory
-     */
-    public Integer getIdCategory() {
+    public Category getIdCategory() {
         return idCategory;
     }
 
-    /**
-     * @param idCategory the idCategory to set
-     */
-    public void setIdCategory(Integer idCategory) {
+    public void setIdCategory(Category idCategory) {
         this.idCategory = idCategory;
     }
 }
-
-    

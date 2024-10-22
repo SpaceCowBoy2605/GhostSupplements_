@@ -7,8 +7,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -33,18 +34,20 @@ public class ShoppingCartControllerTest {
     private MockMvc mvc;
 
     @Autowired
-	private ShoppingCartController controller;
+    private ShoppingCartController controller;
 
     @Autowired
-    private ObjectMapper objectMapper;  
+    private ObjectMapper objectMapper;
 
     @Test
-	void contextLoads() throws Exception {
-		assertThat(controller).isNotNull();
-	}
+    void contextLoads() throws Exception {
+        assertThat(controller).isNotNull();
+    }
+
     @Test
     public void getAllShoppingCartsTest() throws Exception {
-        mvc.perform(get("/shoppingcart").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/shoppingcart")
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(greaterThan(0))));
@@ -52,10 +55,11 @@ public class ShoppingCartControllerTest {
 
     @Test
     public void getShoppingCartByIdTest() throws Exception {
-        mvc.perform(get("/shoppingcart/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/shoppingcart/3")
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.idShoppingCart", is(1)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.idShoppingCart", is(3)));
     }
 
     @Test
@@ -63,13 +67,14 @@ public class ShoppingCartControllerTest {
         mvc.perform(get("/shoppingcart/0").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(containsString("Shopping cart not found")));
+                .andExpect(content().string(containsString("The requested item is not registered")));
     }
+    
 
     @Test
     public void createShoppingCartTest() throws Exception {
         ShoppingCart newShoppingCart = new ShoppingCart();
-        newShoppingCart.setIdShoppingCart(100);  // Ejemplo de valores, puedes ajustarlo según tus restricciones
+        newShoppingCart.setIdShoppingCart(100);
         newShoppingCart.setQuantity(100);
         newShoppingCart.setTotal(1000);
         newShoppingCart.setIdCustomer(10);
@@ -77,16 +82,49 @@ public class ShoppingCartControllerTest {
         mvc.perform(post("/shoppingcart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newShoppingCart)))
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.quantity", is(100)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.total", is(1000)));
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(containsString("Saved record")));
     }
 
     @Test
-    public void deleteShopppingCartTest() throws Exception {
-        mvc.perform(delete("/shoppingcart/1").accept(MediaType.APPLICATION_JSON))
+    public void updateShoppingCartTest() throws Exception {
+        ShoppingCart updatedCart = new ShoppingCart();
+        updatedCart.setQuantity(50);
+        updatedCart.setTotal(500);
+
+        mvc.perform(put("/shoppingcart/8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedCart)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Shopping Cart deleted successfully")));
+                .andExpect(content().string(containsString("Updated record")));
     }
+
+    @Test
+    public void deleteShoppingCartTest() throws Exception {
+        mvc.perform(delete("/shoppingcart/100")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Deleted record")));
+    }
+    @Test
+public void updateShoppingCartNotFoundTest() throws Exception {
+    ShoppingCart updatedShoppingCart = new ShoppingCart();
+    updatedShoppingCart.setQuantity(50);
+    updatedShoppingCart.setTotal(500);
+    updatedShoppingCart.setIdCustomer(10);
+
+    mvc.perform(put("/shoppingcart/0")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updatedShoppingCart)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(containsString("The requested item is not registered")));
 }
 
+@Test
+public void deleteShoppingCartNotFoundTest() throws Exception {
+    mvc.perform(delete("/shoppingcart/0").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(containsString("The requested item is not registered")));
+}
+}
