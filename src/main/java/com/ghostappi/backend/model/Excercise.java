@@ -1,5 +1,6 @@
 package com.ghostappi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "excercise")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Excercise {
 
     @Id

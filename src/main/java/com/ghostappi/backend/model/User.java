@@ -1,12 +1,15 @@
 package com.ghostappi.backend.model;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 
 @Entity
 @Table(name = "User")  // Asegúrate de que el nombre de la tabla coincida exactamente
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
