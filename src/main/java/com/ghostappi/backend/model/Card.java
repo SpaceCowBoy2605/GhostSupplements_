@@ -1,11 +1,12 @@
 package com.ghostappi.backend.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Card {
@@ -13,26 +14,28 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCard;
     private int number;
-    private int type;
-    private int expirationDate;
+
+    @NotBlank(message = "The description must no be null and containn at least one character")
+    private String type;
+    
+    @NotBlank(message = "The description must no be null and containn at least one character")
+    private Date expirationDate;
+
+    //@Min(1)
+    //@Max(999)
+    //@Column(name = "cvv")
+    //@JsonProperty("cvv")
     private int cvv;
+
+    @NotBlank(message = "The description must no be null and containn at least one character")
+    //@Column(name = "description")
+    //@JsonProperty("description")
     private boolean isExpired;
+/* 
     @ManyToOne
     @JoinColumn(name = "idWallet")
     private Wallet wallet; 
-
-    public Card(int idCard, int number, int type, int expirationDate, int cvv, boolean isExpired, Wallet wallet) {
-        this.idCard = idCard;
-        this.number = number;
-        this.type = type;
-        this.expirationDate = expirationDate;
-        this.cvv = cvv;
-        this.isExpired = isExpired;
-        this.wallet = wallet;
-    }
-
-    public Card() {
-    }
+*/
 
     public int getIdCard() {
         return idCard;
@@ -50,23 +53,23 @@ public class Card {
         this.number = number;
     }
 
-    public int getType() {
-        return type;
-    }
+    public String getType() {
+		return type;
+	}
 
-    public void setType(int type) {
-        this.type = type;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    public int getExpirationDate() {
-        return expirationDate;
-    }
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
 
-    public void setExpirationDate(int expirationDate) {
-        this.expirationDate = expirationDate;
-    }
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
 
-    public int getCvv() {
+	public int getCvv() {
         return cvv;
     }
 
@@ -81,7 +84,7 @@ public class Card {
     public void setExpired(boolean isExpired) {
         this.isExpired = isExpired;
     }
-
+    /* 
     public Wallet getWallet() {
         return wallet;
     }
@@ -89,12 +92,14 @@ public class Card {
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
+*/
 
-    @Override
-    public String toString() {
-        return "Card [idCard=" + idCard + ", number=" + number + ", type=" + type + ", expirationDate=" + expirationDate
-                + ", cvv=" + cvv + ", isExpired=" + isExpired + ", wallet=" + wallet + "]";
-    }
-
+	//@Override
+	//public String toString() {
+	//	return "Card [idCard=" + idCard + ", number=" + number + ", type=" + type + ", expirationDate=" + expirationDate
+	//			+ ", cvv=" + cvv + ", isExpired=" + isExpired + "]";
+	//}
+    
 }
+
 
