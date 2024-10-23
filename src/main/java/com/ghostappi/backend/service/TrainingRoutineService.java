@@ -3,14 +3,19 @@ package com.ghostappi.backend.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+import com.ghostappi.backend.model.Excercise;
 import com.ghostappi.backend.model.TrainingRoutine;
+import com.ghostappi.backend.repository.ExcerciseRepository;
 import com.ghostappi.backend.repository.TrainingRoutineRepository;
+import com.ghostappi.backend.repository.UserRepository;
 import com.ghostappi.backend.dto.TrainingRoutineDTO;
+import com.ghostappi.backend.dto.TrainingRoutineRequestDTO;
 import com.ghostappi.backend.dto.ExcerciseDTO;
 
 @Service
@@ -19,6 +24,16 @@ public class TrainingRoutineService {
     @Autowired
     private TrainingRoutineRepository repository;
 
+        @Autowired
+    private TrainingRoutineRepository trainingRoutineRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ExcerciseRepository excerciseRepository;
+
+    
     public List<TrainingRoutineDTO> getAll() {
         List<TrainingRoutine> trainingRoutines = repository.findAll();
         return trainingRoutines.stream()
@@ -46,5 +61,18 @@ public class TrainingRoutineService {
 
     public void save(TrainingRoutine trainingRoutine) {
         repository.save(trainingRoutine);
+    }
+
+    public void save(TrainingRoutineRequestDTO requestDTO) {
+        com.ghostappi.backend.model.User user = userRepository.findById(requestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        Excercise excercise = excerciseRepository.findById(requestDTO.getExerciseId()).orElseThrow(() -> new RuntimeException("Exercise not found"));
+
+        TrainingRoutine trainingRoutine = new TrainingRoutine();
+        trainingRoutine.setUser(user);
+        trainingRoutine.setExcercise(excercise);
+        trainingRoutine.setReps(requestDTO.getReps());
+        trainingRoutine.setSets(requestDTO.getSets());
+
+        trainingRoutineRepository.save(trainingRoutine);
     }
 }

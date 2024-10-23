@@ -25,17 +25,17 @@ public class TrainingRoutinePK implements Serializable {
         return user;
     }
 
-    // public void setUser(User user) {
-    //     this.user = user;
-    // }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Excercise getExcercise() {
         return excercise;
     }
 
-    // public void setExcercise(Excercise excercise) {
-    //     this.excercise = excercise;
-    // }
+    public void setExcercise(Excercise excercise) {
+        this.excercise = excercise;
+    }
     
 
 }

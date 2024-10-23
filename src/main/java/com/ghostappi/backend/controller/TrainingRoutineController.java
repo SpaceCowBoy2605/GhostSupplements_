@@ -2,8 +2,11 @@ package com.ghostappi.backend.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,9 +16,11 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.ghostappi.backend.dto.TrainingRoutineDTO;
+import com.ghostappi.backend.dto.TrainingRoutineRequestDTO;
 import com.ghostappi.backend.model.TrainingRoutine;
 import com.ghostappi.backend.service.TrainingRoutineService;
 
@@ -34,5 +39,31 @@ public class TrainingRoutineController {
     @GetMapping
     public List<TrainingRoutineDTO> getAll() {
         return service.getAll();
+    }
+
+    // @Operation(summary = "Save a training routine")
+    // @ApiResponses( value ={
+    //     @ApiResponse(responseCode = "200", description = "Training routine saved successfully" ,content = { @Content(mediaType = "application/json" , schema = @Schema(implementation = TrainingRoutine.class)) }),
+    //     @ApiResponse(responseCode = "400", description = "Bad request")
+    // }
+    // )
+    // @PostMapping
+    // public ResponseEntity<?> save(TrainingRoutine trainingRoutine) {
+    //     service.save(trainingRoutine);
+    //     return new ResponseEntity<>("Training routine saved successfully", HttpStatus.OK);
+    // }
+
+    @Operation(summary = "Save a training routine with DTO")
+    @ApiResponses(
+        value = {
+            @ApiResponse(responseCode = "200", description = "Training routine saved successfully", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = TrainingRoutineRequestDTO.class))
+            })
+        }
+    )
+    @PostMapping
+    public ResponseEntity<?> save(TrainingRoutineRequestDTO trainingRoutineRequestDTO){
+        service.save(trainingRoutineRequestDTO);
+        return new ResponseEntity<>("Training routine saved successfully", HttpStatus.OK);
     }
 }

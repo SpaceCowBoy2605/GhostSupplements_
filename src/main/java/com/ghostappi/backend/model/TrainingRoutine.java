@@ -1,10 +1,5 @@
 package com.ghostappi.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,13 +19,13 @@ public class TrainingRoutine {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUser")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
     
     @Id
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idExcercise", referencedColumnName = "idExcercise")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Excercise excercise;
 
     @Column(name = "reps")
