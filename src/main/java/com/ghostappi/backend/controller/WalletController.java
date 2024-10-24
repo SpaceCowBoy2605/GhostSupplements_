@@ -21,12 +21,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.ghostappi.backend.model.Wallet;
 import com.ghostappi.backend.service.WalletService;
 
 @RestController
 @RequestMapping("/Wallet")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
+@Tag(name="Wallet")
 public class WalletController {
     @Autowired
     private WalletService wallser;
@@ -57,23 +60,36 @@ public class WalletController {
     return new ResponseEntity<>(wallet, HttpStatus.OK);
     }
 
-    //post
-    @Operation(summary = "registers a new wallet")
-    @ApiResponses(value = {
-    @ApiResponse(responseCode = "201", description = "The request has been successful and the card has been successfully add.", content = {
-        @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
-    }),
-    @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
-        @Content
-    }),
-    @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-        @Content
+        //post
+        @Operation(summary = "registers a new wallet")
+        @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "The request has been successful and the card has been successfully add.", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
+        }),
+        @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
+            @Content
+        }),
+        @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
+            @Content
+        })
     })
-})
-    @PostMapping
-    public void register(@RequestBody Wallet wallet) {
-    wallser.save(wallet);
-  }
+       
+        @PostMapping
+    public ResponseEntity<?> register(@RequestBody Wallet wallet) {
+        try {
+            // Validar que el userId no sea nulo antes de intentar guardar la Wallet
+            if (wallet.getUserId() == null) {
+                return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
+            }
+
+            // Guarda la Wallet en la base de datos
+            wallser.save(wallet);
+            return new ResponseEntity<>("Wallet added correctly", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error adding wallet: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     //update
     @Operation(summary = "Update an existing wallet")
@@ -91,10 +107,15 @@ public class WalletController {
     })
     @PutMapping("{idWallet}")
     public ResponseEntity<?> update(@RequestBody Wallet wallet, @PathVariable Integer idWallet) {
+        try {
         Wallet existingWallet = wallser.getIdWallet(idWallet);
-        wallet.setIdWallet(existingWallet.getIdWallet());  // Ensure id is not overwritten
+        wallet.setIdWallet(existingWallet.getIdWallet());  
         wallser.save(wallet);
-        return new ResponseEntity<String>("Updated record", HttpStatus.OK);
+        return new ResponseEntity<>("Updated record", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Updated record", HttpStatus.NOT_FOUND);
+        }
+       
     }
 
     //delete
@@ -116,7 +137,16 @@ public class WalletController {
         })
     })
     @DeleteMapping("{idWallet}")
-    public void delete(@PathVariable Integer idWallet) {
-        wallser.delete(idWallet);
+    public ResponseEntity<?> delete(@PathVariable Integer idWallet) {
+        try {
+            Wallet wallet = wallser.getIdWallet(idWallet); // Método que debes tener en tu servicio
+            if (wallet == null) {
+                return new ResponseEntity<>("Wallet with ID not found.", HttpStatus.NOT_FOUND);
+            }
+            wallser.delete(idWallet);
+            return new ResponseEntity<>("Wallet deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Wallet with ID not found.", HttpStatus.NOT_FOUND);
+        }
     }
 }

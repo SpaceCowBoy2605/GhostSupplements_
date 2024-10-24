@@ -1,6 +1,7 @@
 package com.ghostappi.backend.model;
 import java.util.Date;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -10,6 +11,24 @@ import jakarta.validation.constraints.*;
 @Entity
 @Table(name = "User")  // Asegúrate de que el nombre de la tabla coincida exactamente
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+=======
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+
+@Entity
+@Table(name = "User")  
+>>>>>>> origin/felix
 public class User {
 
     @Id
@@ -32,7 +51,7 @@ public class User {
 
     @NotNull(message = "El correo no debe ser nulo")
     @NotEmpty(message = "El correo no debe estar vacío")
-    @Email(message = "El correo debe tener un formato válido")
+    //@Email(message = "El correo debe tener un formato válido")
     @Size(max = 50, message = "El correo debe tener un máximo de 50 caracteres")
     @Column(nullable = false, length = 50)
     private String email;
