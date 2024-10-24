@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ghostappi.backend.model.Wallet;
+import com.ghostappi.backend.service.WalletService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import com.ghostappi.backend.model.Wallet;
-import com.ghostappi.backend.service.WalletService;
 
 @RestController
 @RequestMapping("/Wallet")
@@ -77,12 +77,9 @@ public class WalletController {
         @PostMapping
     public ResponseEntity<?> register(@RequestBody Wallet wallet) {
         try {
-            // Validar que el userId no sea nulo antes de intentar guardar la Wallet
             if (wallet.getUserId() == null) {
                 return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
             }
-
-            // Guarda la Wallet en la base de datos
             wallser.save(wallet);
             return new ResponseEntity<>("Wallet added correctly", HttpStatus.OK);
         } catch (Exception e) {
