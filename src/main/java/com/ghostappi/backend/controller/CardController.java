@@ -65,7 +65,6 @@ public class CardController {
         }
            
     }
-
     // post
     @Operation(summary = "Register a new card")
     @ApiResponses(value = {
@@ -75,19 +74,22 @@ public class CardController {
         @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
             @Content
         }),
+         @ApiResponse(responseCode = "404", description = "Wallet no found", content = {
+            @Content
+        }),
         @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
             @Content
         })
     })
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody Card car) {
-        try {
-            service.save(car);
-            return new ResponseEntity<>("Card add correctly", HttpStatus.OK);
-        } catch (Exception e) {
-           return new ResponseEntity<>("Card not add, verify data", HttpStatus.NOT_FOUND);
-        } 
-    }
+        public ResponseEntity<?> register(@RequestBody Card car) {
+            try {
+                service.save(car);
+                return new ResponseEntity<>("Card add correctly", HttpStatus.OK);
+            } catch (Exception e) {
+            return new ResponseEntity<>("Card not add, verify data", HttpStatus.NOT_FOUND);
+            } 
+        }
     //update 
     @Operation(summary = "Update an existing card")
     @ApiResponses(value = {
@@ -125,17 +127,13 @@ public class CardController {
     @DeleteMapping("{idCard}")
     public ResponseEntity<?> delete(@PathVariable Integer idCard) {
         try {
-            // Verificar si la tarjeta existe
             Card card = service.getIdCard(idCard);
             if (card == null) {
-                // Si no existe, retornar 404
                 return new ResponseEntity<>("Card with ID not found.", HttpStatus.NOT_FOUND);
             }
-            // Si existe, proceder a eliminar
             service.delete(idCard);
             return new ResponseEntity<>("Card deleted successfully", HttpStatus.OK); 
         } catch (Exception e) {
-            // Manejar otros errores inesperados
             return new ResponseEntity<>("Error deleting card: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
