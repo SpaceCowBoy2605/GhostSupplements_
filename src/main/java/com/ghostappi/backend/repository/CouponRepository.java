@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.ghostappi.backend.model.Coupon;
 
 @Repository
+
 public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     @Query(value = "SELECT * FROM coupon WHERE discount_percentage = :discountPercentage", nativeQuery = true)
     List<Coupon> getCouponsByDiscountPercentage(@Param("discountPercentage") Integer discountPercentage);
@@ -23,4 +24,9 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     @Query("SELECT c FROM Coupon c WHERE c.expirationDate > :currentDate")
     List<Coupon> getValidCouponsJPQL(@Param("currentDate") Date currentDate);
     
+    @Query("SELECT c FROM Coupon c WHERE c.expirationDate > CURRENT_DATE AND c.status = true")
+    List<Coupon> findActiveCoupons();
+
+    @Query("SELECT c FROM Coupon c WHERE c.expirationDate <= CURRENT_DATE OR c.status = false")
+    List<Coupon> findInactiveCoupons();
 }

@@ -42,6 +42,18 @@ public class CouponController {
 	public List<Coupon> getAll() {
 		return service.getAll();
 	}
+	@Operation(summary = "Get all active coupons")
+    @ApiResponse(responseCode = "200", description = "Found active coupons")
+    @GetMapping("/active")
+    public List<Coupon> getActiveCoupons() {
+        return service.getActiveCoupons();
+    }
+	@Operation(summary = "Get all inactive coupons")
+    @ApiResponse(responseCode = "200", description = "Found inactive coupons")
+    @GetMapping("/inactive")
+    public List<Coupon> getInactiveCoupons() {
+        return service.getInactiveCoupons();
+    }
 
 	@Operation(summary = "Get a coupon by his id of the coupon")
 	@ApiResponses(value = {

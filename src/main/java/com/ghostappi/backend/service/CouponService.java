@@ -16,6 +16,12 @@ public class CouponService {
     @Autowired
     private CouponRepository repo;
 
+	public List<Coupon> getActiveCoupons() {
+        return repo.findActiveCoupons();
+    }
+	public List<Coupon> getInactiveCoupons() {
+        return repo.findInactiveCoupons();
+    }
     public List<Coupon> getAll() {
 		return repo.findAll();
 	}
