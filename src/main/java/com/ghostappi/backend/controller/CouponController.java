@@ -83,12 +83,12 @@ public class CouponController {
 		return new ResponseEntity<String>("Updated record", HttpStatus.OK);
 	}
 
-	@Operation(summary = "Delete a coupon with his id")
+	/*@Operation(summary = "Delete a coupon with his id")
 	@DeleteMapping("{idCoupon}")
 	public ResponseEntity<?> delete(@PathVariable Integer idCoupon) {
 		service.delete(idCoupon);
 		return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
-	}
+	}*/
 
 	@ExceptionHandler(NoSuchElementException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)

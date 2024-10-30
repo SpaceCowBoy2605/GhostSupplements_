@@ -25,7 +25,9 @@ CREATE TABLE Category (
   idCategory int NOT NULL AUTO_INCREMENT, 
   name       varchar(100) NOT NULL, 
   PRIMARY KEY (idCategory));
-  
+  INSERT INTO Category (name) 
+VALUES ('Suplementos Proteicos');
+	
   CREATE TABLE Brand (
   idBrand int NOT NULL AUTO_INCREMENT, 
   name    varchar(100) NOT NULL, 
@@ -99,6 +101,7 @@ CREATE TABLE Coupon (
   initDate           date NOT NULL, 
   expirationDate     date NOT NULL, 
   discountPercentage tinyint NOT NULL, 
+  status bit Not null,
   idCategory         int NOT NULL, 
   PRIMARY KEY (idCoupon));
 ALTER TABLE Coupon ADD CONSTRAINT FKCoupon44711 FOREIGN KEY (idCategory) REFERENCES Category (idCategory);
@@ -263,4 +266,4 @@ ALTER TABLE SaleProduct ADD CONSTRAINT FKSaleProduc702254 FOREIGN KEY (idProduct
 ALTER TABLE Sale ADD CONSTRAINT FKSale367830 FOREIGN KEY (idUser) REFERENCES `User` (idUser);
 ALTER TABLE Sale ADD CONSTRAINT FKSale556174 FOREIGN KEY (idCoupon) REFERENCES Coupon (idCoupon);
 
-#DROP DATABASE ghostsupplements;
+#}DROP DATABASE ghostsupplements;
