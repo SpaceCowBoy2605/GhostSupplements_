@@ -1,5 +1,8 @@
 package com.ghostappi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,11 +15,16 @@ public class Reward {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int idReward;
 
-    @NotBlank(message = "The description must no be null and containn at least one character")
+    @Column(name = "idProduct", nullable = false)
+    private Integer productId;
+
+    //@NotBlank(message = "The description must no be null and containn at least one character")
     private int goalPoints;
 
-    @NotBlank(message = "The description must no be null and containn at least one character")
+    //@NotBlank(message = "The description must no be null and containn at least one character")
     private String description;
+
+
  
     public Reward() {
     }
@@ -45,8 +53,20 @@ public class Reward {
         this.description = description;
     }
 
+    @JsonProperty("idProduct")
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    @Override
+    public String toString() {
+        return "Reward [idReward=" + idReward + ", goalPoints=" + goalPoints + ", description=" + description
+                + ", productId=" + productId + "]";
+    }
 
 }
-   //@OneToOne
-    //@JoinColumn(name = "idProduct")
-    //private Product product;
+    

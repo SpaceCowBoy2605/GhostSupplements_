@@ -1,22 +1,26 @@
 package com.ghostappi.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 public class Points {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
      
-    
     private int idPoints;
 
-     @NotBlank(message = "The description must no be null and containn at least one character")
     private int accumulatedPoints;
    
+    @Column(name = "idUser", nullable = false)
+    private Integer userId;
 
     public int getIdPoints() {
         return idPoints;
@@ -31,7 +35,17 @@ public class Points {
         this.accumulatedPoints = accumulatedPoints;
     }
 
+    @JsonProperty("idUser") 
+    public Integer getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+    @Override
+    public String toString() {
+        return "Points [idPoints=" + idPoints + ", accumulatedPoints=" + accumulatedPoints + ", userId=" + userId + "]";
+    }
+
 }
- //@OneToOne  
-    //    @JoinColumn(name = "idUser")
-    //private User user;

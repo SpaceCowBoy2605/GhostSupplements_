@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ghostappi.backend.model.Card;
+import com.ghostappi.backend.model.CardDTO;
 import com.ghostappi.backend.service.CardService;
+import com.ghostappi.backend.service.WalletService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,16 +33,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/Card")
 @CrossOrigin(origins = "*", methods= {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Card")
+@Tag(name="Cards")
 public class CardController {
     @Autowired
   private CardService service;  
 
-  @GetMapping
-  public List<Card> getAll() {
-    return service.getAll();
-  }
 
+  @GetMapping
+public List<CardDTO> getAll() {
+    return service.getAll();  // Asegúrate de que el método service.getAll() devuelva List<CardDTO>
+}
     // get
     @Operation(summary = "Get Card by ID")
     @ApiResponses(value = {
@@ -55,20 +58,23 @@ public class CardController {
         })
     })
 
-    @GetMapping("{idCard}") 
+    @GetMapping("{idCard}")
     public ResponseEntity<?> getIdCard(@PathVariable Integer idCard) {
         try {
-             Card card = service.getIdCard(idCard);
-            return new ResponseEntity<>(card, HttpStatus.OK);
+            CardDTO cardDTO = service.getIdCard(idCard);  // Asegúrate de que el método devuelve CardDTO
+            if (cardDTO != null) {
+                return new ResponseEntity<>(cardDTO, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Card not found", HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
-            return new ResponseEntity<>("Card not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error retrieving card", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-           
     }
     // post
     @Operation(summary = "Register a new card")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "The request has been successful and the Card has been successfully created.", content = {
+        @ApiResponse(responseCode = "200", description = "The request has been successful and the Card has been successfully created.", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Card.class))
         }),
         @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
@@ -81,15 +87,20 @@ public class CardController {
             @Content
         })
     })
-    @PostMapping
-        public ResponseEntity<?> register(@RequestBody Card car) {
-            try {
-                service.save(car);
-                return new ResponseEntity<>("Card add correctly", HttpStatus.OK);
-            } catch (Exception e) {
-            return new ResponseEntity<>("Card not add, verify data", HttpStatus.NOT_FOUND);
-            } 
+        @PostMapping
+    public ResponseEntity<String> register(@RequestBody CardDTO cardDTO) {
+        try {
+            String result = service.save(cardDTO);  
+            if (result.equals("Card saved successfully")) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Card not added, verify data", HttpStatus.BAD_REQUEST);
         }
+    }
+
     //update 
     @Operation(summary = "Update an existing card")
     @ApiResponses(value = {
@@ -104,18 +115,23 @@ public class CardController {
             @Content
         })
     })
-    @PutMapping("{idCard}")
-    public ResponseEntity<?> update(@RequestBody Card Card, @PathVariable Integer idCard) {
-        try {
-            Card existingCard = service.getIdCard(idCard);
-            Card.setIdCard(existingCard.getIdCard()); 
-            service.save(Card);
-            return new ResponseEntity<String>("Updated record", HttpStatus.OK);
-        } catch (Exception e) {
-             return new ResponseEntity<String>("Updated no record, verify your information", HttpStatus.BAD_REQUEST);
+        @PutMapping("{idCard}")
+public ResponseEntity<?> update(@RequestBody CardDTO cardDTO, @PathVariable Integer idCard) {
+    try {
+        CardDTO existingCardDTO = service.getIdCard(idCard); // Cambia a CardDTO
+        if (existingCardDTO == null) {
+            return new ResponseEntity<>("Card not found", HttpStatus.NOT_FOUND);
         }
-       
+
+        // Actualiza el ID para asegurarte de que el ID sea correcto
+        cardDTO.setIdCard(existingCardDTO.getIdCard());
+        service.save(cardDTO); // Asegúrate de que el servicio acepte CardDTO
+
+        return new ResponseEntity<String>("Updated record", HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<String>("Update failed, verify your information", HttpStatus.BAD_REQUEST);
     }
+}
         //delete
     @Operation(summary = "Delete a card by ID")
     @ApiResponses(value = {
@@ -125,16 +141,17 @@ public class CardController {
         @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = { @Content })
     })
     @DeleteMapping("{idCard}")
-    public ResponseEntity<?> delete(@PathVariable Integer idCard) {
-        try {
-            Card card = service.getIdCard(idCard);
-            if (card == null) {
-                return new ResponseEntity<>("Card with ID not found.", HttpStatus.NOT_FOUND);
-            }
-            service.delete(idCard);
-            return new ResponseEntity<>("Card deleted successfully", HttpStatus.OK); 
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error deleting card: ", HttpStatus.INTERNAL_SERVER_ERROR);
+public ResponseEntity<?> delete(@PathVariable Integer idCard) {
+    try {
+        CardDTO cardDTO = service.getIdCard(idCard);  // Cambia a CardDTO
+        if (cardDTO == null) {
+            return new ResponseEntity<>("Card with ID not found.", HttpStatus.NOT_FOUND);
         }
+
+        service.delete(idCard);
+        return new ResponseEntity<String>("Card deleted successfully", HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<String>("Error deleting card: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
 }

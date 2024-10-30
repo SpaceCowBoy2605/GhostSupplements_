@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ghostappi.backend.controller.CardController;
 import com.ghostappi.backend.model.Card;
+import com.ghostappi.backend.model.CardDTO;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -73,18 +74,19 @@ public class CardControllerTest {
     // Test para registrar una nueva tarjeta error
     @Test
     public void createCardTest() throws Exception {
-        Card newCard = new Card();
-        newCard.setNumber(12345678);
+        CardDTO newCard = new CardDTO();
+        newCard.setNumber(1234567);
         newCard.setType("Credit");
-        newCard.setExpirationDate(new Date(System.currentTimeMillis() + 86400000)); // Fecha futura
+        newCard.setExpirationDate(new Date(System.currentTimeMillis() + 86400000)); 
         newCard.setCvv(123);
         newCard.setExpired(false);
+        newCard.setWalletId(1);
 
         mvc.perform(post("/Card")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newCard)))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Card add correctly")));
+            .andExpect(content().string(containsString("Card saved successfully")));
     }
 
     // Test para actualizar una tarjeta existente
@@ -113,12 +115,13 @@ public class CardControllerTest {
         updatedCard.setExpirationDate(new Date(System.currentTimeMillis() + 86400000)); // Fecha futura
         updatedCard.setCvv(789);
         updatedCard.setExpired(true);
+        updatedCard.setIdCard(1);
 
         mvc.perform(put("/Card/9999")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedCard)))
-            .andExpect(status().isBadRequest()) // Devuelve 400 si no encuentra el registro
-            .andExpect(content().string(containsString("Updated no record, verify your information")));
+            .andExpect(status().isNotFound()) // Devuelve 400 si no encuentra el registro
+            .andExpect(content().string(containsString("Card not found")));
     }
 
     @Test
