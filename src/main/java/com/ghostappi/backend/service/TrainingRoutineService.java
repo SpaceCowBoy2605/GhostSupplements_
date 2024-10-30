@@ -75,4 +75,30 @@ public class TrainingRoutineService {
 
         trainingRoutineRepository.save(trainingRoutine);
     }
+
+    public List<TrainingRoutineDTO> getByUserId(Integer userId) {
+        List<TrainingRoutine> trainingRoutines = repository.findAll();
+        return trainingRoutines.stream()
+            .filter(routine -> routine.getUser().getIdUser().equals(userId))
+            .collect(Collectors.groupingBy(routine -> routine.getUser().getIdUser()))
+            .entrySet().stream()
+            .map(entry -> {
+                TrainingRoutineDTO dto = new TrainingRoutineDTO();
+                dto.setUserId(entry.getKey());
+                List<ExcerciseDTO> exercises = entry.getValue().stream()
+                    .map(routine -> {
+                        ExcerciseDTO exerciseDTO = new ExcerciseDTO();
+                        exerciseDTO.setIdExercise(routine.getExcercise().getIdExcercise());
+                        exerciseDTO.setName(routine.getExcercise().getName());
+                        exerciseDTO.setDifficulty(routine.getExcercise().getDifficulty());
+                        exerciseDTO.setReps(routine.getReps());
+                        exerciseDTO.setSets(routine.getSets());
+                        return exerciseDTO;
+                    })
+                    .collect(Collectors.toList());
+                dto.setExercises(exercises);
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }
 }

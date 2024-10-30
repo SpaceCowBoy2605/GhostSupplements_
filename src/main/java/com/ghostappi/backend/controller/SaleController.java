@@ -23,11 +23,11 @@ import com.ghostappi.backend.service.SaleService;
 import com.ghostappi.backend.repository.UserRepository;
 
 
-@RestController
-@RequestMapping("sales")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
-@Validated
-@Tag(name = "Sale Management", description = "Provides methods for managing sales")
+// @RestController
+// @RequestMapping("sales")
+// @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+// @Validated
+// @Tag(name = "Sale Management", description = "Provides methods for managing sales")
 public class SaleController {
 
 	@Autowired

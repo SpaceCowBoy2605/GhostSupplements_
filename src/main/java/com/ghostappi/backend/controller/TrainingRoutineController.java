@@ -23,6 +23,8 @@ import com.ghostappi.backend.dto.TrainingRoutineDTO;
 import com.ghostappi.backend.dto.TrainingRoutineRequestDTO;
 import com.ghostappi.backend.model.TrainingRoutine;
 import com.ghostappi.backend.service.TrainingRoutineService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/trainingroutines")
@@ -40,6 +42,16 @@ public class TrainingRoutineController {
     public List<TrainingRoutineDTO> getAll() {
         return service.getAll();
     }
+
+
+    @Operation(summary = "Get training routines by user ID")
+    @ApiResponse(responseCode = "200", description = "Found training routines for the specified user",
+            content = { @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TrainingRoutineDTO.class))) })
+    @GetMapping("/user/{userId}")
+    public List<TrainingRoutineDTO> getByUserId(@RequestParam Integer id){
+        return service.getByUserId(id);
+    }
+    
 
     // @Operation(summary = "Save a training routine")
     // @ApiResponses( value ={

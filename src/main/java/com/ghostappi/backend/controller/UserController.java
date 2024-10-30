@@ -22,30 +22,30 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.validation.Valid;
 
 
-@RestController
-@RequestMapping("users")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
-@Validated
-@Tag(name = "User Management", description = "Provides methods for managing users")
+// @RestController
+// @RequestMapping("users")
+// @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+//         RequestMethod.PUT })
+// @Validated
+// @Tag(name = "User Management", description = "Provides methods for managing users")
 public class UserController {
     @Autowired
     private UserService service;
 
-    @Operation(summary = "Get all ")
-    @ApiResponse(responseCode = "200", description = "Found Users", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class))) })
+    // @Operation(summary = "Get all ")
+    // @ApiResponse(responseCode = "200", description = "Found Users", content = {
+    //         @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class))) })
     @GetMapping
     public List<User> getAll() {
         return service.getAll();
     }
 
-    @Operation(summary = "Get a user by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
+    // @Operation(summary = "Get a user by its ID")
+    // @ApiResponses(value = {
+    //         @ApiResponse(responseCode = "200", description = "User found", content = {
+    //                 @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
+    //         @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
+    //         @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
     @GetMapping("{idUser}")
     public ResponseEntity<?> getByIdUser(@PathVariable Integer idUser) {
         try {
@@ -56,12 +56,12 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "Register a user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User saved", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid user information", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already exists", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error saving record", content = @Content) })
+    // @Operation(summary = "Register a user")
+    // @ApiResponses(value = {
+    //         @ApiResponse(responseCode = "201", description = "User saved", content = @Content),
+    //         @ApiResponse(responseCode = "400", description = "Invalid user information", content = @Content),
+    //         @ApiResponse(responseCode = "409", description = "Email already exists", content = @Content),
+    //         @ApiResponse(responseCode = "500", description = "Error saving record", content = @Content) })
     @PostMapping
     public ResponseEntity<?> registrar(@Valid @RequestBody User user) { // Agrega @Valid aquí
         try {
@@ -76,10 +76,10 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "Delete a user by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User deleted", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
+    // @Operation(summary = "Delete a user by its ID")
+    // @ApiResponses(value = {
+    //         @ApiResponse(responseCode = "200", description = "User deleted", content = @Content),
+    //         @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
     @DeleteMapping("/{idUser}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer idUser) {
         try {
@@ -90,14 +90,14 @@ public class UserController {
             return new ResponseEntity<>("Error deleting user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @Operation(summary = "Get all users with pagination")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found users", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Invalid page or size supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Users not found", content = @Content)
-    })
+    // @Operation(summary = "Get all users with pagination")
+    // @ApiResponses(value = {
+    //         @ApiResponse(responseCode = "200", description = "Found users", content = {
+    //                 @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+    //         }),
+    //         @ApiResponse(responseCode = "400", description = "Invalid page or size supplied", content = @Content),
+    //         @ApiResponse(responseCode = "404", description = "Users not found", content = @Content)
+    // })
     @GetMapping(value = "pagination", params = { "page", "size" })
     public ResponseEntity<List<User>> getAllPaginated(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
