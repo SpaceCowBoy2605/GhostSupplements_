@@ -1,7 +1,5 @@
 package com.ghostappi.backend.test;
 
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -13,11 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ghostappi.backend.controller.PointsController;
-import com.ghostappi.backend.model.Points;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ghostappi.backend.controller.PointsController;
+import com.ghostappi.backend.model.Points;
 
 
 @SpringBootTest
@@ -73,7 +70,8 @@ public class PointsControllerTest {
         @Test
     public void createPointsTest() throws Exception {
         Points newPoints = new Points();
-        newPoints.setAccumulatedPoints(500);  // Establece los puntos acumulados
+        newPoints.setAccumulatedPoints(500); 
+        newPoints.setUserId(1); 
 
         mvc.perform(post("/Points")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -85,39 +83,40 @@ public class PointsControllerTest {
         @Test
     public void updatePointsTest() throws Exception {
         Points updatedPoints = new Points();
-        updatedPoints.setAccumulatedPoints(1000);  // Actualiza los puntos acumulados
+        updatedPoints.setAccumulatedPoints(10); 
+        updatedPoints.setUserId(1);
 
-        mvc.perform(put("/Points/1")  // Asumiendo que el ID del recurso a actualizar es 1
+        mvc.perform(put("/Points/1")  
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedPoints)))
-            .andExpect(status().isOk())  // Verifica que el estado sea 200 OK
-            .andExpect(content().string(containsString("Updated record")));  // Verifica que el mensaje de respuesta contenga lo esperado
+            .andExpect(status().isOk())  
+            .andExpect(content().string(containsString("Updated record")));  
     }
 
         @Test
     public void updatePointsNotFoundTest() throws Exception {
         Points updatedPoints = new Points();
-        updatedPoints.setAccumulatedPoints(9999);  // Nuevos puntos acumulados para la actualización
+        updatedPoints.setAccumulatedPoints(9999);  
 
-        mvc.perform(put("/Points/9999")  // Intento de actualizar un recurso inexistente con ID 9999
+        mvc.perform(put("/Points/9999")  
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedPoints)))
-            .andExpect(status().isBadRequest())  // Verifica que devuelva un 400 Bad Request si no encuentra el registro
-            .andExpect(content().string(containsString("Updated no record, verify data")));  // Verifica que el mensaje de error sea el esperado
+            .andExpect(status().isBadRequest()) 
+            .andExpect(content().string(containsString("Updated no record, verify data")));  
     }
 
         @Test
     public void deletePointsTest() throws Exception {
-        mvc.perform(delete("/Points/3").accept(MediaType.APPLICATION_JSON))  // Elimina el recurso con ID 3
-            .andExpect(status().isOk())  // Verifica que el estado sea 200 o 204 al eliminar exitosamente
-            .andExpect(content().string(containsString("Points deleted successfully")));  // Verifica el mensaje de éxito
+        mvc.perform(delete("/Points/1").accept(MediaType.APPLICATION_JSON))  
+            .andExpect(status().isOk())  
+            .andExpect(content().string(containsString("Points deleted successfully")));  
     }
 
         @Test
     public void deletePointsNotFoundTest() throws Exception {
-        mvc.perform(delete("/Points/90").accept(MediaType.APPLICATION_JSON))  // Intenta eliminar el recurso con ID 90
-            .andExpect(status().isNotFound())  // Verifica que la respuesta tenga un estado 404 Not Found
-            .andExpect(content().string(containsString("The requested resource was not registered.")));  // Verifica que el mensaje de error sea adecuado
+        mvc.perform(delete("/Points/90").accept(MediaType.APPLICATION_JSON)) 
+            .andExpect(status().isNotFound())  
+            .andExpect(content().string(containsString("The requested resource was not registered.")));  
     }
 
 

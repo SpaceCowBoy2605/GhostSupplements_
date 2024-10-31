@@ -28,6 +28,7 @@ import com.ghostappi.backend.model.Points;
 
 
 
+
 @RestController
 @RequestMapping("/Points")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
@@ -70,7 +71,7 @@ public class PointsController {
     //post
     @Operation(summary = "Register points")
         @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "The request has been successful and the points has been successfully add.", content = {
+        @ApiResponse(responseCode = "201", description = "The request has been successful and the points has been successfully add.", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
         }),
         @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
@@ -83,10 +84,13 @@ public class PointsController {
     @PostMapping
     public ResponseEntity<?> register(@RequestBody Points points) {
         try {
+            if(points.getUserId() == null){
+                 return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
+            }
             poinser.save(points);
-            return new ResponseEntity<>("Points added correctly", HttpStatus.OK); // Cambiado a 201
+            return new ResponseEntity<String>("Points added correctly", HttpStatus.OK); 
         } catch (Exception e) {
-            return new ResponseEntity<>("points not added, verify data", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("points not added, verify data", HttpStatus.BAD_REQUEST);
         }
     }
    //update
@@ -107,9 +111,9 @@ public class PointsController {
     public ResponseEntity<?> update(@RequestBody Points points, @PathVariable Integer idPoint) {
         try {
             Points existingPoint = poinser.getIdPoint(idPoint);
-            points.setIdPoints(existingPoint.getIdPoints());  // Ensure id is not overwritten
+            points.setIdPoints(existingPoint.getIdPoints());  
             poinser.save(points);
-            return new ResponseEntity<String>("Updated record", HttpStatus.OK);
+            return new ResponseEntity<>("Updated record", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Updated no record, verify data", HttpStatus.BAD_REQUEST);
         }

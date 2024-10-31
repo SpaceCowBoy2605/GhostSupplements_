@@ -14,21 +14,21 @@ import jakarta.transaction.Transactional;
     @Transactional
     public class RewardService {
     @Autowired
-    private RewardRepository repor;
+    private RewardRepository rewardpor;
 
     public List<Reward> getAll(){
-        return repor.findAll();
+        return rewardpor.findAll();
     }
 
     public void save(Reward rew){
-      repor.save(rew);
+      rewardpor.save(rew);
     }
 
     public Reward getIdReward(Integer IdReward){
-      return repor.findById(IdReward).get();
+      return rewardpor.findById(IdReward).get();
     }
 
     public void delete(Integer IdReward){
-      repor.deleteById(IdReward);
+      rewardpor.deleteById(IdReward);
     }
 }
