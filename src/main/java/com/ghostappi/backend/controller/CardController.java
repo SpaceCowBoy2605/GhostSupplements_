@@ -33,7 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("cards")
 @CrossOrigin(origins = "*", methods= {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="cards", description="Provides methods for managing cards")
+@Tag(name="Cards", description="Provides methods for managing cards")
 public class CardController {
     @Autowired
   private CardService service;  
@@ -45,7 +45,7 @@ public List<CardDTO> getAll() {
     return service.getAll();  
 }
     // get
-    @Operation(summary = "Get Card by User")
+    @Operation(summary = "Get Card by Id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Found Card :D", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Card.class))

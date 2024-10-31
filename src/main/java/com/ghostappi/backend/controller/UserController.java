@@ -27,12 +27,12 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
         RequestMethod.PUT })
 @Validated
-@Tag(name = "User Management", description = "Provides methods for managing users")
+@Tag(name = "Users", description = "Provides methods for managing users")
 public class UserController {
     @Autowired
     private UserService service;
 
-    @Operation(summary = "Get all ")
+    @Operation(summary = "Get all users")
     @ApiResponse(responseCode = "200", description = "Found Users", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class))) })
     @GetMapping

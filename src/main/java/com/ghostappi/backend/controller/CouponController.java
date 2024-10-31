@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("coupons")
 @CrossOrigin(origins = "*")
-@Tag(name = "Coupons", description="APIs related with Coupon")
+@Tag(name = "Coupons", description="Provides methods for managing coupons")
 public class CouponController {
 	@Autowired
 	private CouponService service;

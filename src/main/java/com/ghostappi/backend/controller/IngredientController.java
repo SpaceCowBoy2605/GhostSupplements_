@@ -39,7 +39,7 @@ import com.ghostappi.backend.model.Ingredient;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "Ingredients", description = "Methods required to manage inngredients")
+@Tag(name = "Ingredients", description = "Methods required to manage ingredients")
 
 public class IngredientController {
 
@@ -78,6 +78,11 @@ public class IngredientController {
         return ResponseEntity.ok("Ingredient saved");
     }
 
+
+    @Operation(summary = "Update an existing ingredient", description = "Update an existing ingredient")
+    @ApiResponse(responseCode = "200", description = "Success", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))
+    })
     @PutMapping("{idNIngredient}")
     public ResponseEntity<Ingredient>update(@RequestBody Ingredient ingredient, @PathVariable Integer idIngredient){
         if(!Objects.equals(ingredient.getIdIngredient(), idIngredient))

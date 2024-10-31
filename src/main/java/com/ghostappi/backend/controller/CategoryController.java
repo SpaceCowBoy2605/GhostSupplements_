@@ -74,6 +74,14 @@ public class CategoryController {
         return service.getById(id);
     }
 
+
+    @Operation(summary = "Update a category by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
+    })
     @PutMapping("{idCategory}")
     public ResponseEntity<Category> update(@PathVariable Integer idCategory, @RequestBody Category category) {
         if (!Objects.equals(category.getIdCategory(), idCategory)) {

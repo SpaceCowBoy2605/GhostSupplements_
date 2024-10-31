@@ -29,12 +29,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("wallets")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Wallet", description="Provides methods for managing wallet")
+@Tag(name="Wallets", description="Provides methods for managing wallet")
 public class WalletController {
     @Autowired
     private WalletService wallser;
     
-    @Operation(summary = "Get all wallet")
+    @Operation(summary = "Get all wallets")
     @GetMapping
     public List<Wallet>getAll(){
         return wallser.getAll();
@@ -62,7 +62,7 @@ public class WalletController {
     }
 
         //post
-        @Operation(summary = "registers a new wallet")
+        @Operation(summary = "Registers a new wallet")
         @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The request has been successful and the card has been successfully add.", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))

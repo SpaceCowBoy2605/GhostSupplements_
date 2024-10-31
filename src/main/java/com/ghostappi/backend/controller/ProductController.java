@@ -45,7 +45,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Operation(summary = "Get all products", description = "Get all products from the database")
+    @Operation(summary = "Get all products", description = "Get all products")
     @ApiResponse(responseCode = "200", description = "Success", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Product.class)))
     })
@@ -56,7 +56,7 @@ public class ProductController {
     }
 
 
-    @Operation(summary = "Get product by id", description = "Get product by id from the database")
+    @Operation(summary = "Get product by id", description = "Get product by id")
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = {
@@ -70,7 +70,7 @@ public class ProductController {
         return productService.getById(idProduct);
     }
 
-    @Operation(summary = "Create a new Product in Database", description = "Create a new Product in the database")
+    @Operation(summary = "Create a new Product", description = "Create a new Product")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
@@ -83,7 +83,7 @@ public class ProductController {
         return new ResponseEntity<>("Product created", HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update a Product in Database", description = "Update a Product in the database")
+    @Operation(summary = "Update a product", description = "Update a product")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product updated", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
