@@ -27,13 +27,14 @@ package com.ghostappi.backend.controller;
     import io.swagger.v3.oas.annotations.tags.Tag;
 
     @RestController
-    @RequestMapping("/Reward")
+    @RequestMapping("rewards")
     @CrossOrigin(origins="*", methods= {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-    @Tag(name="Rewards")
+    @Tag(name="Rewards", description="Provides methods for managing rewards")
     public class RewardController {
         @Autowired
         private RewardService rew;
 
+        @Operation(summary = "Get all rewards")
         @GetMapping
         public List<Reward> getAll(){
             return rew.getAll();

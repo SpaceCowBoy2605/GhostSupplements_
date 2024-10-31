@@ -30,13 +30,14 @@ import com.ghostappi.backend.model.Points;
 
 
 @RestController
-@RequestMapping("/Points")
+@RequestMapping("points")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Points")
+@Tag(name="Points", description= "Provides methods for managing points")
 public class PointsController {
     @Autowired
     private PointsService poinser;
 
+    @Operation(summary = "Get all points")
     @GetMapping
     public List<Points>getAll(){
         return poinser.getAll();

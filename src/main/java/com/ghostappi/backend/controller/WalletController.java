@@ -27,13 +27,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/Wallet")
+@RequestMapping("wallets")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Wallet")
+@Tag(name="Wallet", description="Provides methods for managing wallet")
 public class WalletController {
     @Autowired
     private WalletService wallser;
     
+    @Operation(summary = "Get all wallet")
     @GetMapping
     public List<Wallet>getAll(){
         return wallser.getAll();
