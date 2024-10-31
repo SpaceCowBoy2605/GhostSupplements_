@@ -7,6 +7,7 @@ package com.ghostappi.backend.service;
 
 	import com.ghostappi.backend.model.Card;
 	import com.ghostappi.backend.repository.CardRepository;
+
 	import jakarta.transaction.Transactional;
 
 @Service
@@ -24,7 +25,7 @@ public class CardService  {
   }
 
   public Card getIdCard(Integer idCard){
-    return wallpor.findById(idCard).get();
+    return wallpor.findById(idCard).orElse(null);
   }
 
   public void delete(Integer idCard){

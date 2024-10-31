@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ghostappi.backend.model.Wallet;
-import com.ghostappi.backend.service.WalletService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,45 +23,55 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import com.ghostappi.backend.service.PointsService;
+import com.ghostappi.backend.model.Points;
+
+
+
 @RestController
-@RequestMapping("/Wallet")
+@RequestMapping("/Points")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Wallet")
-public class WalletController {
+@Tag(name="Points")
+public class PointsController {
     @Autowired
-    private WalletService wallser;
-    
+    private PointsService poinser;
+
     @GetMapping
-    public List<Wallet>getAll(){
-        return wallser.getAll();
+    public List<Points>getAll(){
+        return poinser.getAll();
     }
 
-    //GET
-    @Operation(summary = "Get wallet by ID")
+     //GET
+    @Operation(summary = "Get points by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found wallet correctly", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
+        @ApiResponse(responseCode = "200", description = "Found points correctly", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
         }),
-        @ApiResponse(responseCode = "404", description = "wallet not found, please verify your information"),
+        @ApiResponse(responseCode = "404", description = "Points not found, please verify your information"),
         @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
             @Content
         }),
         @ApiResponse(responseCode = "500", description = "Internal server error, please stand by", content = {
-            @Content
+            @Content                    
         })
     })
 
-    @GetMapping("{idWallet}")
-    public ResponseEntity<Wallet> getIdWallet(@PathVariable Integer idWallet) {
-    Wallet wallet = wallser.getIdWallet(idWallet);
-    return new ResponseEntity<>(wallet, HttpStatus.OK);
+    @GetMapping("{idPoint}")
+    public ResponseEntity<?>getIdPoint(@PathVariable Integer idPoint) 
+    {
+        try {
+            Points points = poinser.getIdPoint(idPoint);
+            return new ResponseEntity<>(points, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Points not found", HttpStatus.NOT_FOUND);
+        }
+        
     }
-
-        //post
-        @Operation(summary = "registers a new wallet")
+    //post
+    @Operation(summary = "Register points")
         @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "The request has been successful and the card has been successfully add.", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
+        @ApiResponse(responseCode = "200", description = "The request has been successful and the points has been successfully add.", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
         }),
         @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
             @Content
@@ -73,52 +80,45 @@ public class WalletController {
             @Content
         })
     })
-       
-        @PostMapping
-    public ResponseEntity<?> register(@RequestBody Wallet wallet) {
+    @PostMapping
+    public ResponseEntity<?> register(@RequestBody Points points) {
         try {
-            if (wallet.getUserId() == null) {
-                return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
-            }
-            wallser.save(wallet);
-            return new ResponseEntity<>("Wallet added correctly", HttpStatus.OK);
+            poinser.save(points);
+            return new ResponseEntity<>("Points added correctly", HttpStatus.OK); // Cambiado a 201
         } catch (Exception e) {
-            return new ResponseEntity<>("Error adding wallet: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("points not added, verify data", HttpStatus.BAD_REQUEST);
         }
     }
-
-
-    //update
-    @Operation(summary = "Update an existing wallet")
+   //update
+    @Operation(summary = "Update an existing points")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Updated record", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
         }),
-        @ApiResponse(responseCode = "404", description = "Wallet with ID not found"),
-        @ApiResponse(responseCode = "400", description = "Invalid wallet data", content = {
+        @ApiResponse(responseCode = "404", description = "points with ID not found"),
+        @ApiResponse(responseCode = "400", description = "Invalid points data", content = {
             @Content
         }),
         @ApiResponse(responseCode = "500", description = "An internal server error has occurred", content = {
             @Content
         })
     })
-    @PutMapping("{idWallet}")
-    public ResponseEntity<?> update(@RequestBody Wallet wallet, @PathVariable Integer idWallet) {
+    @PutMapping("{idPoint}")
+    public ResponseEntity<?> update(@RequestBody Points points, @PathVariable Integer idPoint) {
         try {
-        Wallet existingWallet = wallser.getIdWallet(idWallet);
-        wallet.setIdWallet(existingWallet.getIdWallet());  
-        wallser.save(wallet);
-        return new ResponseEntity<>("Updated record", HttpStatus.OK);
+            Points existingPoint = poinser.getIdPoint(idPoint);
+            points.setIdPoints(existingPoint.getIdPoints());  // Ensure id is not overwritten
+            poinser.save(points);
+            return new ResponseEntity<String>("Updated record", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Updated record", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Updated no record, verify data", HttpStatus.BAD_REQUEST);
         }
-       
+        
     }
-
-    //delete
-    @Operation(summary = "Delete a wallet by ID")
+        //delete
+    @Operation(summary = "Delete a points by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "The wallet has been successfully deleted."),
+        @ApiResponse(responseCode = "200", description = "The points has been successfully deleted."),
         @ApiResponse(responseCode = "404", description = "Wallet with ID not found."),
         @ApiResponse(responseCode = "400", description = "Invalid wallet ID.", content = {
             @Content
@@ -133,17 +133,14 @@ public class WalletController {
             @Content
         })
     })
-    @DeleteMapping("{idWallet}")
-    public ResponseEntity<?> delete(@PathVariable Integer idWallet) {
-        try {
-            Wallet wallet = wallser.getIdWallet(idWallet); // Método que debes tener en tu servicio
-            if (wallet == null) {
-                return new ResponseEntity<>("Wallet with ID not found.", HttpStatus.NOT_FOUND);
-            }
-            wallser.delete(idWallet);
-            return new ResponseEntity<>("Wallet deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Wallet with ID not found.", HttpStatus.NOT_FOUND);
+    @DeleteMapping("{idPoint}")
+    public ResponseEntity<?> delete(@PathVariable Integer idPoint) {
+        if (poinser.getIdPoint(idPoint) == null) {
+            return new ResponseEntity<>("Points not found", HttpStatus.NOT_FOUND);
         }
+        poinser.delete(idPoint);
+        return new ResponseEntity<>("Points deleted successfully", HttpStatus.OK);
     }
+
+
 }

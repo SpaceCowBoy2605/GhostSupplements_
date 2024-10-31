@@ -1,39 +1,40 @@
 package com.ghostappi.backend.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Card {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCard;
+    
     private int number;
-    private int type;
-    private int expirationDate;
+
+    @NotBlank(message = "The description must no be null and contain at least one character")
+    private String type;
+
+    @NotNull(message = "The expiration date must not be null")
+    private Date expirationDate;
+
     private int cvv;
+
     private boolean isExpired;
+    /* 
     @ManyToOne
     @JoinColumn(name = "idWallet")
+    @JsonIgnore // Ignora el objeto completo de Wallet en la respuesta JSON
     private Wallet wallet; 
+    */
 
-    public Card(int idCard, int number, int type, int expirationDate, int cvv, boolean isExpired, Wallet wallet) {
-        this.idCard = idCard;
-        this.number = number;
-        this.type = type;
-        this.expirationDate = expirationDate;
-        this.cvv = cvv;
-        this.isExpired = isExpired;
-        this.wallet = wallet;
-    }
-
-    public Card() {
-    }
-
+    // Getters y Setters estándar
     public int getIdCard() {
         return idCard;
     }
@@ -50,19 +51,19 @@ public class Card {
         this.number = number;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public int getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(int expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -82,6 +83,7 @@ public class Card {
         this.isExpired = isExpired;
     }
 
+    /* 
     public Wallet getWallet() {
         return wallet;
     }
@@ -89,12 +91,11 @@ public class Card {
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
-
-    @Override
-    public String toString() {
-        return "Card [idCard=" + idCard + ", number=" + number + ", type=" + type + ", expirationDate=" + expirationDate
-                + ", cvv=" + cvv + ", isExpired=" + isExpired + ", wallet=" + wallet + "]";
-    }
-
+    */
+    // Añadir el método para obtener solo el idWallet
+    //@JsonProperty("idWallet") // Para que se muestre en la respuesta JSON como "idWallet"
+    //public Integer getWalletId() {
+    //    return wallet != null ? wallet.getIdWallet() : null; // Solo devuelve el idWallet
+    //}
 }
 

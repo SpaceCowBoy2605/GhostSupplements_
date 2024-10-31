@@ -32,7 +32,7 @@ public class User {
 
     @NotNull(message = "El correo no debe ser nulo")
     @NotEmpty(message = "El correo no debe estar vacío")
-    @Email(message = "El correo debe tener un formato válido")
+    //@Email(message = "El correo debe tener un formato válido")
     @Size(max = 50, message = "El correo debe tener un máximo de 50 caracteres")
     @Column(nullable = false, length = 50)
     private String email;
