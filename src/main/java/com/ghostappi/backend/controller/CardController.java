@@ -31,20 +31,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @RestController
-@RequestMapping("/Card")
+@RequestMapping("cards")
 @CrossOrigin(origins = "*", methods= {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Cards")
+@Tag(name="cards", description="Provides methods for managing cards")
 public class CardController {
     @Autowired
   private CardService service;  
 
-
+ @Operation(summary = "Get all Cards")
   @GetMapping
 public List<CardDTO> getAll() {
-    return service.getAll();  // Asegúrate de que el método service.getAll() devuelva List<CardDTO>
+    
+    return service.getAll();  
 }
     // get
-    @Operation(summary = "Get Card by ID")
+    @Operation(summary = "Get Card by User")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Found Card :D", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Card.class))
@@ -61,7 +62,7 @@ public List<CardDTO> getAll() {
     @GetMapping("{idCard}")
     public ResponseEntity<?> getIdCard(@PathVariable Integer idCard) {
         try {
-            CardDTO cardDTO = service.getIdCard(idCard);  // Asegúrate de que el método devuelve CardDTO
+            CardDTO cardDTO = service.getIdCard(idCard);  
             if (cardDTO != null) {
                 return new ResponseEntity<>(cardDTO, HttpStatus.OK);
             } else {
