@@ -30,26 +30,28 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("coupons")
 @CrossOrigin(origins = "*")
-@Tag(name = "Coupons")
+@Tag(name = "Coupons", description="APIs related with Coupon")
 public class CouponController {
 	@Autowired
 	private CouponService service;
 
-	@Operation(summary = "Get all coupons")
+	/*@Operation(summary = "Get all coupons")
 	@ApiResponse(responseCode = "200", description = "Found Coupons", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
 	@GetMapping
 	public List<Coupon> getAll() {
 		return service.getAll();
-	}
+	}*/
 	@Operation(summary = "Get all active coupons")
-    @ApiResponse(responseCode = "200", description = "Found active coupons")
+    @ApiResponse(responseCode = "200", description = "Found active coupons", content = {
+		@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
     @GetMapping("/active")
     public List<Coupon> getActiveCoupons() {
         return service.getActiveCoupons();
     }
 	@Operation(summary = "Get all inactive coupons")
-    @ApiResponse(responseCode = "200", description = "Found inactive coupons")
+    @ApiResponse(responseCode = "200", description = "Found inactive coupons", content = {
+		@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
     @GetMapping("/inactive")
     public List<Coupon> getInactiveCoupons() {
         return service.getInactiveCoupons();
