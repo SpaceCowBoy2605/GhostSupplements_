@@ -16,6 +16,12 @@ public class CouponService {
     @Autowired
     private CouponRepository repo;
 
+	public List<Coupon> getActiveCoupons() {
+        return repo.findActiveCoupons();
+    }
+	public List<Coupon> getInactiveCoupons() {
+        return repo.findExpiredCoupons();
+    }
     public List<Coupon> getAll() {
 		return repo.findAll();
 	}
@@ -29,12 +35,12 @@ public class CouponService {
 				.orElseThrow(() -> new NoSuchElementException("The requested item is not registered"));
 	}
 
-	public void delete(Integer idCoupon) {
+	/*public void delete(Integer idCoupon) {
 		if (!repo.existsById(idCoupon)) {
 			throw new NoSuchElementException("The requested item is not registered");
 		}
 		repo.deleteById(idCoupon);
-	}
+	} */
 
 }
 
