@@ -30,18 +30,32 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("coupons")
 @CrossOrigin(origins = "*")
-@Tag(name = "Coupons")
+@Tag(name = "Coupons", description="Provides methods for managing coupons")
 public class CouponController {
 	@Autowired
 	private CouponService service;
 
-	@Operation(summary = "Get all coupons")
+	/*@Operation(summary = "Get all coupons")
 	@ApiResponse(responseCode = "200", description = "Found Coupons", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
 	@GetMapping
 	public List<Coupon> getAll() {
 		return service.getAll();
-	}
+	}*/
+	@Operation(summary = "Get all active coupons")
+    @ApiResponse(responseCode = "200", description = "Found active coupons", content = {
+		@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
+    @GetMapping("/active")
+    public List<Coupon> getActiveCoupons() {
+        return service.getActiveCoupons();
+    }
+	@Operation(summary = "Get all inactive coupons")
+    @ApiResponse(responseCode = "200", description = "Found inactive coupons", content = {
+		@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
+    @GetMapping("/inactive")
+    public List<Coupon> getInactiveCoupons() {
+        return service.getInactiveCoupons();
+    }
 
 	@Operation(summary = "Get a coupon by his id of the coupon")
 	@ApiResponses(value = {
@@ -71,12 +85,12 @@ public class CouponController {
 		return new ResponseEntity<String>("Updated record", HttpStatus.OK);
 	}
 
-	@Operation(summary = "Delete a coupon with his id")
+	/*@Operation(summary = "Delete a coupon with his id")
 	@DeleteMapping("{idCoupon}")
 	public ResponseEntity<?> delete(@PathVariable Integer idCoupon) {
 		service.delete(idCoupon);
 		return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
-	}
+	}*/
 
 	@ExceptionHandler(NoSuchElementException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)

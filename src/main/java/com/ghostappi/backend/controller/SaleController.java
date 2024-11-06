@@ -44,7 +44,7 @@ public class SaleController {
 		return saleService.getAll();
 	}
 
-	@Operation(summary = "Get a sale by its ID")
+	@Operation(summary = "Get a sale by id")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Sale found", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Sale.class))}),
@@ -87,7 +87,7 @@ public class SaleController {
 		}
 	}
 
-	@Operation(summary = "Delete a sale by its ID")
+	@Operation(summary = "Delete a sale by id")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Sale deleted", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Sale not found", content = @Content)})

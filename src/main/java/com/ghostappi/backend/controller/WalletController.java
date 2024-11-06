@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ghostappi.backend.model.Wallet;
+import com.ghostappi.backend.model.WalletDto;
 import com.ghostappi.backend.service.WalletService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,13 +27,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/Wallet")
+@RequestMapping("wallets")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Wallet")
+@Tag(name="Wallets", description="Provides methods for managing wallet")
 public class WalletController {
     @Autowired
     private WalletService wallser;
     
+    @Operation(summary = "Get all wallets")
     @GetMapping
     public List<Wallet>getAll(){
         return wallser.getAll();
@@ -61,9 +62,9 @@ public class WalletController {
     }
 
         //post
-        @Operation(summary = "registers a new wallet")
+        @Operation(summary = "Registers a new wallet")
         @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "The request has been successful and the card has been successfully add.", content = {
+        @ApiResponse(responseCode = "200", description = "The request has been successful and the card has been successfully add.", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
         }),
         @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
@@ -74,20 +75,18 @@ public class WalletController {
         })
     })
        
-        @PostMapping
-    public ResponseEntity<?> register(@RequestBody Wallet wallet) {
+   @PostMapping
+    public ResponseEntity<String> createWallet(@RequestBody WalletDto walletDto) {
         try {
-            if (wallet.getUserId() == null) {
-                return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
-            }
-            wallser.save(wallet);
-            return new ResponseEntity<>("Wallet added correctly", HttpStatus.OK);
+            // Aquí llamas al método save que espera un WalletDto
+            String result = wallser.save(walletDto);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error adding wallet: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error creating wallet: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-
+/* 
     //update
     @Operation(summary = "Update an existing wallet")
     @ApiResponses(value = {
@@ -114,7 +113,7 @@ public class WalletController {
         }
        
     }
-
+*/
     //delete
     @Operation(summary = "Delete a wallet by ID")
     @ApiResponses(value = {

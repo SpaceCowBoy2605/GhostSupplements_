@@ -44,7 +44,7 @@ public class ExcerciseController {
         @Autowired
         private ExcerciseService excerciseService;
     
-        @Operation(summary = "Get all excercises", description = "Get all excercises from the database")
+        @Operation(summary = "Get all excercises", description = "Get all excercises")
         @ApiResponse(responseCode = "200", description = "Success", content = {
                 @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Excercise.class)))
         })    
@@ -53,7 +53,7 @@ public class ExcerciseController {
             return excerciseService.getAll();
         }
 
-        @Operation(summary = "Get excercise by id", description = "Get excercise by id from the database")
+        @Operation(summary = "Get excercise by id", description = "Get excercise by id")
         @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
@@ -65,7 +65,7 @@ public class ExcerciseController {
             return excerciseService.getById(idExcercise);
         }
 
-        @Operation(summary = "Create a new excercise in Database", description="Create a new Excercise in Database, includes the name ant difficulty")
+        @Operation(summary = "Create a new excercise", description="Create a new excercise, includes the name ant difficulty")
         @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Excercise created" ,content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
@@ -80,6 +80,14 @@ public class ExcerciseController {
             return new ResponseEntity<>("Excercise saved", HttpStatus.CREATED);
         }
         
+        @Operation(summary = "Update an existing excercise", description="Update an existing excercise")
+        @ApiResponses( value = {
+            @ApiResponse(responseCode = "201", description = "Excercise created" ,content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
+        })
+
         @PutMapping("{idExcercise}")
         public ResponseEntity<?> update(@RequestBody Excercise excercise, @PathVariable Integer idExcercise){
             if(!Objects.equals(excercise.getIdExcercise(), idExcercise)){

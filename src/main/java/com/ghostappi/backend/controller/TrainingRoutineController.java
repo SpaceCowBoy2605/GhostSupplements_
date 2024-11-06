@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/trainingroutines")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
-@Tag(name = "TrainingRoutines", description = "Provides a methods for managing training routines from the database")
+@Tag(name = "Training Routines", description = "Provides a methods for managing training routines from the database")
 public class TrainingRoutineController {
 
     @Autowired
@@ -65,7 +65,7 @@ public class TrainingRoutineController {
     //     return new ResponseEntity<>("Training routine saved successfully", HttpStatus.OK);
     // }
 
-    @Operation(summary = "Save a training routine with DTO")
+    @Operation(summary = "Save a training routine")
     @ApiResponses(
         value = {
             @ApiResponse(responseCode = "200", description = "Training routine saved successfully", content = {

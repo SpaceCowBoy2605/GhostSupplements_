@@ -39,7 +39,7 @@ import com.ghostappi.backend.model.AdministrationVia;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "AdministrationVias", description = "Methods required to manage administration vias")
+@Tag(name = "Administration Vias", description = "Methods required to manage administration vias")
 public class AdministrationViaController {
 
     @Autowired

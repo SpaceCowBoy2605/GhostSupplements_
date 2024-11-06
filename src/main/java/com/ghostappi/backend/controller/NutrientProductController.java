@@ -26,7 +26,7 @@ import com.ghostappi.backend.model.NutrientProduct;
         RequestMethod.POST,
         RequestMethod.PUT,
         RequestMethod.DELETE })
-@Tag(name = "NutrientProduct", description = "Methods required to manage NutrientProduct relation")
+@Tag(name = "Nutrients Product", description = "Methods required to manage nutrients for a product")
 public class NutrientProductController {
 
     @Autowired

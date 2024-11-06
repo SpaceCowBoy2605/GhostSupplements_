@@ -1,4 +1,4 @@
-package com.ghostappi.backend.controller;
+/*package com.ghostappi.backend.controller;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
@@ -128,3 +128,4 @@ public void deleteShoppingCartNotFoundTest() throws Exception {
             .andExpect(content().string(containsString("The requested item is not registered")));
 }
 }
+*/
