@@ -1,4 +1,4 @@
-package com.ghostappi.backend.controller;
+package com.ghostappi.backend.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ghostappi.backend.controller.CouponController;
 import com.ghostappi.backend.model.Category;
 import com.ghostappi.backend.model.Coupon;
 

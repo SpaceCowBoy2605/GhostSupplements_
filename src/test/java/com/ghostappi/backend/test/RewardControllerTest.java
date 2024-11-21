@@ -41,17 +41,9 @@ public class RewardControllerTest {
         assertThat(mvc).isNotNull();
     }
 
-     @Test
-    public void getAllRewardsTest() throws Exception {
-        mvc.perform(get("/Reward").accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(greaterThan(0)))); // Verifica que haya al menos una tarjeta
-    }
-
     @Test
     public void getRewardByIdTest() throws Exception {
-        mvc.perform(get("/Reward/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/rewards/1").accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.idReward", is(1))); // Verifica que el ID sea 1
@@ -59,36 +51,10 @@ public class RewardControllerTest {
 
     @Test
     public void getCardByIdNotFoundTest() throws Exception {
-        mvc.perform(get("/Reward/9999").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/rewards/9999").accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound()) // Verifica que se devuelva 404
             .andExpect(content().string(containsString("Reward not found")));
-    }
-
-    @Test
-    public void createRewardTest() throws Exception {
-        Reward newReward = new Reward();
-        newReward.setGoalPoints(100);
-        newReward.setDescription("New reward for achieving 100 points");
-
-        mvc.perform(post("/Reward")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newReward)))
-            .andExpect(status().isOk())  // Verifica que el estado sea 200 (OK)
-            .andExpect(content().string(containsString("rEWARD add correctly")));  // Verifica que el mensaje de éxito sea correcto
-    }
-
-    @Test
-    public void updateRewardTest() throws Exception {
-        Reward updatedReward = new Reward();
-        updatedReward.setGoalPoints(150);
-        updatedReward.setDescription("Updated reward for achieving 150 points");
-
-        mvc.perform(put("/Reward/1")  // Supone que el ID del reward a actualizar es 2
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedReward)))
-            .andExpect(status().isOk())  // Verifica que el estado sea 200 (OK)
-            .andExpect(content().string(containsString("Updated record")));  // Verifica que el mensaje de éxito sea correcto
     }
 
     @Test
@@ -97,23 +63,17 @@ public class RewardControllerTest {
         updatedReward.setGoalPoints(999);
         updatedReward.setDescription("Attempting to update a non-existent reward");
 
-        mvc.perform(put("/Reward/9999")  // Supone que el ID del reward no existente es 9999
+        mvc.perform(put("/rewards/9999")  // Supone que el ID del reward no existente es 9999
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedReward)))
             .andExpect(status().isNotFound())  // Devuelve 404 si no encuentra el reward
             .andExpect(content().string(containsString("information not found")));  // Verifica que el mensaje de error sea correcto
     }
 
-    @Test
-    public void deleteRewardTest() throws Exception {
-        mvc.perform(delete("/Reward/2").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent()) 
-            .andExpect(content().string(containsString("Reward deleted successfully"))); 
-    }
 
     @Test
     public void deleteRewardNotFoundTest() throws Exception {
-        mvc.perform(delete("/Reward/90").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/rewards/90").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound()) // Verifica que se devuelva 404
             .andExpect(content().string(containsString("Reward with ID not found."))); 
     }

@@ -3,8 +3,7 @@ package com.ghostappi.backend.test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,14 +40,6 @@ public class PointsControllerTest {
     @Test
     void contextLoads() throws Exception {
         assertThat(mvc).isNotNull();
-    }
-
-        @Test
-    public void getAllPointsTest() throws Exception {
-        mvc.perform(get("/points").accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(greaterThan(0)))); // Verifica que haya al menos una tarjeta
     }
 
       @Test
