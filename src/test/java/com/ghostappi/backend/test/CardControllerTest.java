@@ -24,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ghostappi.backend.controller.CardController;
+import com.ghostappi.backend.dto.CardDTO;
 import com.ghostappi.backend.model.Card;
-import com.ghostappi.backend.model.CardDTO;
 
 @SpringBootTest
 @AutoConfigureMockMvc

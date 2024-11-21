@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ghostappi.backend.dto.CardDTO;
 import com.ghostappi.backend.model.Card;
-import com.ghostappi.backend.model.CardDTO;
 import com.ghostappi.backend.service.CardService;
-import com.ghostappi.backend.service.WalletService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

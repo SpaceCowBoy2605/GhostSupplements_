@@ -1,4 +1,4 @@
-package com.ghostappi.backend.model;
+package com.ghostappi.backend.dto;
 
 
 import java.util.Date;
@@ -7,7 +7,7 @@ public class CardDTO {
     private int idCard;
     private int number;
     private String type;
-    private Date expirationDate; // Asegúrate de que este sea java.util.Date
+    private Date expirationDate;
     private int cvv;
     private boolean expired;
     private Integer walletId;

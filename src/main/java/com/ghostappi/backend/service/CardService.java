@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ghostappi.backend.dto.CardDTO;
 import com.ghostappi.backend.model.Card;
-import com.ghostappi.backend.model.CardDTO;
 import com.ghostappi.backend.model.Wallet;
 import com.ghostappi.backend.repository.CardRepository;
 import com.ghostappi.backend.repository.WalletRepository;

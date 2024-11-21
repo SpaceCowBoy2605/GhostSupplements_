@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.ghostappi.backend.dto.TrainingRoutineDTO;
 import com.ghostappi.backend.dto.TrainingRoutineRequestDTO;
-import com.ghostappi.backend.model.TrainingRoutine;
 import com.ghostappi.backend.service.TrainingRoutineService;
 import org.springframework.web.bind.annotation.RequestParam;
 
