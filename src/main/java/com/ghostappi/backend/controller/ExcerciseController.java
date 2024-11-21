@@ -38,68 +38,72 @@ import com.ghostappi.backend.model.Excercise;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "Excercises", description = "Methods required to manage excercises")
+@Tag(name = "Excercises", description = "Provides methods for managing excercises")
 public class ExcerciseController {
-    
-        @Autowired
-        private ExcerciseService excerciseService;
-    
-        @Operation(summary = "Get all excercises", description = "Get all excercises")
-        @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Excercise.class)))
-        })    
-        @GetMapping
-        public List<Excercise> getAll() {
-            return excerciseService.getAll();
-        }
 
-        @Operation(summary = "Get excercise by id", description = "Get excercise by id")
-        @ApiResponses(value = {
+    @Autowired
+    private ExcerciseService excerciseService;
+
+    @Operation(summary = "Get all excercises with pagination", description = "Return a list of excercises with pagination")
+    @ApiResponse(responseCode = "200", description = "Success", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Excercise.class)))
+    })
+    @GetMapping(params = { "page", "size" })
+    public List<Excercise> getAll(
+        @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+        @RequestParam(value = "size", defaultValue = "5", required = false) int size
+    ) {
+        List<Excercise> excercises = excerciseService.getAll(page, size);
+        return excercises;
+    }
+
+    @Operation(summary = "Get excercise by id", description = "Get excercise by id")
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
             }),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
-        })
-        @GetMapping("/{idExcercise}")
-        public Excercise getById(@RequestParam Integer idExcercise) {
-            return excerciseService.getById(idExcercise);
-        }
+    })
+    @GetMapping("/{idExcercise}")
+    public Excercise getById(@RequestParam Integer idExcercise) {
+        return excerciseService.getById(idExcercise);
+    }
 
-        @Operation(summary = "Create a new excercise", description="Create a new excercise, includes the name ant difficulty")
-        @ApiResponses( value = {
-            @ApiResponse(responseCode = "201", description = "Excercise created" ,content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
+    @Operation(summary = "Create a new excercise", description = "Create a new excercise, includes the name ant difficulty")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Excercise created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
             }),
             @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
-        }
+    }
 
-        )
-        @PostMapping
-        public ResponseEntity<?> save(@RequestBody Excercise excercise) {
-            excerciseService.save(excercise);
-            return new ResponseEntity<>("Excercise saved", HttpStatus.CREATED);
-        }
-        
-        @Operation(summary = "Update an existing excercise", description="Update an existing excercise")
-        @ApiResponses( value = {
-            @ApiResponse(responseCode = "201", description = "Excercise created" ,content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
+    )
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody Excercise excercise) {
+        excerciseService.save(excercise);
+        return new ResponseEntity<>("Excercise saved", HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update an existing excercise", description = "Update an existing excercise")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Excercise created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Excercise.class))
             }),
             @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
-        })
+    })
 
-        @PutMapping("{idExcercise}")
-        public ResponseEntity<?> update(@RequestBody Excercise excercise, @PathVariable Integer idExcercise){
-            if(!Objects.equals(excercise.getIdExcercise(), idExcercise)){
-                throw new IllegalArgumentException("The provider identifier do not match");
-            }
-
-            Excercise excersiteToUpdate = excerciseService.getById(idExcercise);
-            excersiteToUpdate.setName(excercise.getName());
-            excersiteToUpdate.setDifficulty(excercise.getDifficulty());
-
-            excerciseService.save(excersiteToUpdate);
-            return new ResponseEntity<>(excersiteToUpdate, HttpStatus.OK);
+    @PutMapping("{idExcercise}")
+    public ResponseEntity<?> update(@RequestBody Excercise excercise, @PathVariable Integer idExcercise) {
+        if (!Objects.equals(excercise.getIdExcercise(), idExcercise)) {
+            throw new IllegalArgumentException("The provider identifier do not match");
         }
+
+        Excercise excersiteToUpdate = excerciseService.getById(idExcercise);
+        excersiteToUpdate.setName(excercise.getName());
+        excersiteToUpdate.setDifficulty(excercise.getDifficulty());
+
+        excerciseService.save(excersiteToUpdate);
+        return new ResponseEntity<>(excersiteToUpdate, HttpStatus.OK);
+    }
 
 }

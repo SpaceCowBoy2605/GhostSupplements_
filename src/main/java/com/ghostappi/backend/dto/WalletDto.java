@@ -1,4 +1,4 @@
-package com.ghostappi.backend.model;
+package com.ghostappi.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,7 +16,7 @@ public class WalletDto {
     private int idWallet;
 
     @Column(name = "idUser", nullable = false)
-    private Integer userId; // Cambiamos a Integer para que se maneje directamente
+    private Integer userId; 
 
     public int getIdWallet() {
         return idWallet;
@@ -26,13 +26,13 @@ public class WalletDto {
         this.idWallet = idWallet;
     }
 
-    @JsonProperty("idUser") // Para mostrar como "idUser" en JSON
+    @JsonProperty("idUser") 
     public Integer getUserId() {
-        return userId; // Retorna directamente el userId
+        return userId; 
     }
 
     public void setUserId(Integer userId) {
-        this.userId = userId; // Establece solo el userId
+        this.userId = userId; 
     }
 
     @Override

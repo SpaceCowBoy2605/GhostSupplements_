@@ -39,19 +39,24 @@ import com.ghostappi.backend.model.AdministrationVia;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "Administration Vias", description = "Methods required to manage administration vias")
+@Tag(name = "Administration Vias", description = "Provides methods for managing administration vias")
 public class AdministrationViaController {
 
     @Autowired
     private AdministrationViaService service;
 
-    @Operation(summary = "Get all administration vias", description = "Get all administration vias from the database")
+    @Operation(summary = "Get all administration vias with pagination", description = "Return a list of all administration vias with pagination")
     @ApiResponse(responseCode = "200", description = "Success", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = AdministrationVia.class)))
     })
-    @GetMapping
-    public List<AdministrationVia> getAll() {
-        return service.getAll();
+    @GetMapping(params = {"page", "size"})
+    public List<AdministrationVia> getAll(
+                @RequestParam(value = "page",defaultValue = "0", required = false) int page,
+                @RequestParam(value = "size",defaultValue = "5", required = false) int size
+        
+    ) {
+        List<AdministrationVia> administrationVias = service.getAll(page, size);
+        return administrationVias;
     }
 
     @Operation(summary = "Get administration via by id", description = "Get administration via by id from the database")

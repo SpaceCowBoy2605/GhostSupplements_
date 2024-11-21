@@ -39,20 +39,24 @@ import com.ghostappi.backend.model.Ingredient;
         RequestMethod.DELETE,
         RequestMethod.PUT
 })
-@Tag(name = "Ingredients", description = "Methods required to manage ingredients")
+@Tag(name = "Ingredients", description = "Provides methods for managing ingredients")
 
 public class IngredientController {
 
     @Autowired
     private IngredientService ingredientService;
     
-    @Operation(summary = "Get all ingredients", description = "Get all ingredients from the database")
+    @Operation(summary = "Get all ingredients", description = "Return a list of all ingredients with pagination")
     @ApiResponse(responseCode = "200", description = "Success", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))
     })
-    @GetMapping
-    public List<Ingredient>getAll(){
-        return ingredientService.getAll();
+    @GetMapping(params = { "page", "size" })
+    public List<Ingredient>getAll(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "5", required = false) int size
+    ){
+        List<Ingredient> ingredients = ingredientService.getAll(page, size);
+        return ingredients;
     }
 
     @Operation(summary = "Get ingredient by id", description = "Get ingredient by id from the database")

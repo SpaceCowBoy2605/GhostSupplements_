@@ -3,6 +3,9 @@ package com.ghostappi.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,9 +17,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ghostappi.backend.dto.CardDTO;
+import com.ghostappi.backend.dto.CardDTO2;
 import com.ghostappi.backend.model.Card;
 import com.ghostappi.backend.service.CardService;
 
@@ -26,6 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -36,16 +42,52 @@ public class CardController {
     @Autowired
   private CardService service;  
 
- @Operation(summary = "Get all Cards")
+
+ @Operation(summary = "Get Cards with pagination" ,description = "Return a list of all Cards with pagination")
   @GetMapping
-public List<CardDTO> getAll() {
-    
-    return service.getAll();  
+public ResponseEntity<List<CardDTO>> getAll(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+    try {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CardDTO> cards = service.getAll(pageable);
+        return new ResponseEntity<>(cards.getContent(), HttpStatus.OK); // Solo los datos
+    } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
     // get
-    @Operation(summary = "Get Card by Id")
+    @Operation(summary = "Get Card by Id user")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found Card :D", content = {
+        @ApiResponse(responseCode = "200", description = "Found User :D", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Card.class))
+        }),
+        @ApiResponse(responseCode = "404", description = "User not found, please verify your information"),
+        @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
+            @Content
+        }),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = {
+            @Content
+        })
+    })
+
+        @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getCardsByUserId(@PathVariable Integer userId) {
+        try {
+            CardDTO2 cardDTO2 = service.getCardsByUserId(userId); 
+            if (cardDTO2 != null && !cardDTO2.getCards().isEmpty()) {
+                return new ResponseEntity<>(cardDTO2, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("No cards found for the requested user", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error retrieving cards for user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "Get Card by id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found Card", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Card.class))
         }),
         @ApiResponse(responseCode = "404", description = "Card not found, please verify your information"),
@@ -56,8 +98,7 @@ public List<CardDTO> getAll() {
             @Content
         })
     })
-
-    @GetMapping("{idCard}")
+        @GetMapping("{idCard}")
     public ResponseEntity<?> getIdCard(@PathVariable Integer idCard) {
         try {
             CardDTO cardDTO = service.getIdCard(idCard);  
@@ -87,7 +128,7 @@ public List<CardDTO> getAll() {
         })
     })
         @PostMapping
-    public ResponseEntity<String> register(@RequestBody CardDTO cardDTO) {
+    public ResponseEntity<String> register(@Valid @RequestBody CardDTO cardDTO) {
         try {
             String result = service.save(cardDTO);  
             if (result.equals("Card saved successfully")) {
@@ -114,23 +155,21 @@ public List<CardDTO> getAll() {
             @Content
         })
     })
-        @PutMapping("{idCard}")
-public ResponseEntity<?> update(@RequestBody CardDTO cardDTO, @PathVariable Integer idCard) {
-    try {
-        CardDTO existingCardDTO = service.getIdCard(idCard); // Cambia a CardDTO
-        if (existingCardDTO == null) {
-            return new ResponseEntity<>("Card not found", HttpStatus.NOT_FOUND);
+    @PutMapping("/{idCard}")
+    public ResponseEntity<?> updateCard(@PathVariable int idCard,@Valid @RequestBody CardDTO cardDTO) {
+        try {
+           
+            if (cardDTO.getIdCard() != idCard) {
+                return new ResponseEntity<>("ID in the path does not match ID in the request body", HttpStatus.BAD_REQUEST);
+            }
+
+            String response = service.updateCard(cardDTO); 
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Update failed, verify your information", HttpStatus.BAD_REQUEST);
         }
-
-        // Actualiza el ID para asegurarte de que el ID sea correcto
-        cardDTO.setIdCard(existingCardDTO.getIdCard());
-        service.save(cardDTO); // Asegúrate de que el servicio acepte CardDTO
-
-        return new ResponseEntity<String>("Updated record", HttpStatus.OK);
-    } catch (Exception e) {
-        return new ResponseEntity<String>("Update failed, verify your information", HttpStatus.BAD_REQUEST);
     }
-}
+
         //delete
     @Operation(summary = "Delete a card by ID")
     @ApiResponses(value = {

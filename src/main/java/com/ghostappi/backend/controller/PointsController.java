@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,117 +27,120 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.ghostappi.backend.service.PointsService;
 import com.ghostappi.backend.model.Points;
 
-
-
-
 @RestController
 @RequestMapping("points")
-@CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Tag(name="Points", description= "Provides methods for managing points")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
+@Tag(name = "Points", description = "Provides methods for managing points")
 public class PointsController {
     @Autowired
     private PointsService poinser;
 
-    @Operation(summary = "Get all points")
-    @GetMapping
-    public List<Points>getAll(){
-        return poinser.getAll();
+    @Operation(summary = "Get all points with pagination", description = "Return a list of all points with pagination")
+    @GetMapping(params = { "page", "size" })
+    public List<Points> getAll(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
+        List<Points> points = poinser.getAll(page, size);
+        return points;
     }
 
-     //GET
+    // GET
     @Operation(summary = "Get points by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found points correctly", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
-        }),
-        @ApiResponse(responseCode = "404", description = "Points not found, please verify your information"),
-        @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "Internal server error, please stand by", content = {
-            @Content                    
-        })
+            @ApiResponse(responseCode = "200", description = "Found points correctly", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Points not found, please verify your information"),
+            @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
+                    @Content
+            }),
+            @ApiResponse(responseCode = "500", description = "Internal server error, please stand by", content = {
+                    @Content
+            })
     })
 
     @GetMapping("{idPoint}")
-    public ResponseEntity<?>getIdPoint(@PathVariable Integer idPoint) 
-    {
+    public ResponseEntity<?> getIdPoint(@PathVariable Integer idPoint) {
         try {
             Points points = poinser.getIdPoint(idPoint);
             return new ResponseEntity<>(points, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Points not found", HttpStatus.NOT_FOUND);
         }
-        
+
     }
-    //post
+
+    // post
     @Operation(summary = "Register points")
-        @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "The request has been successful and the points has been successfully add.", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
-        }),
-        @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-            @Content
-        })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "The request has been successful and the points has been successfully add.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
+            }),
+            @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
+                    @Content
+            }),
+            @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
+                    @Content
+            })
     })
     @PostMapping
     public ResponseEntity<?> register(@RequestBody Points points) {
         try {
-            if(points.getUserId() == null){
-                 return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
+            if (points.getUserId() == null) {
+                return new ResponseEntity<>("userId cannot be null", HttpStatus.BAD_REQUEST);
             }
             poinser.save(points);
-            return new ResponseEntity<String>("Points added correctly", HttpStatus.OK); 
+            return new ResponseEntity<String>("Points added correctly", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("points not added, verify data", HttpStatus.BAD_REQUEST);
         }
     }
-   //update
+
+    // update
     @Operation(summary = "Update an existing points")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Updated record", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
-        }),
-        @ApiResponse(responseCode = "404", description = "points with ID not found"),
-        @ApiResponse(responseCode = "400", description = "Invalid points data", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "An internal server error has occurred", content = {
-            @Content
-        })
+            @ApiResponse(responseCode = "200", description = "Updated record", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Points.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "points with ID not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid points data", content = {
+                    @Content
+            }),
+            @ApiResponse(responseCode = "500", description = "An internal server error has occurred", content = {
+                    @Content
+            })
     })
     @PutMapping("{idPoint}")
     public ResponseEntity<?> update(@RequestBody Points points, @PathVariable Integer idPoint) {
         try {
             Points existingPoint = poinser.getIdPoint(idPoint);
-            points.setIdPoints(existingPoint.getIdPoints());  
+            points.setIdPoints(existingPoint.getIdPoints());
             poinser.save(points);
             return new ResponseEntity<>("Updated record", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Updated no record, verify data", HttpStatus.BAD_REQUEST);
         }
-        
+
     }
-        //delete
+
+    // delete
     @Operation(summary = "Delete a points by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "The points has been successfully deleted."),
-        @ApiResponse(responseCode = "404", description = "Wallet with ID not found."),
-        @ApiResponse(responseCode = "400", description = "Invalid wallet ID.", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "401", description = "Unauthorized. Please log in and try again.", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "403", description = "Forbidden. You do not have permission to perform this action.", content = {
-            @Content
-        })
+            @ApiResponse(responseCode = "200", description = "The points has been successfully deleted."),
+            @ApiResponse(responseCode = "404", description = "Wallet with ID not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid wallet ID.", content = {
+                    @Content
+            }),
+            @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
+                    @Content
+            }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized. Please log in and try again.", content = {
+                    @Content
+            }),
+            @ApiResponse(responseCode = "403", description = "Forbidden. You do not have permission to perform this action.", content = {
+                    @Content
+            })
     })
     @DeleteMapping("{idPoint}")
     public ResponseEntity<?> delete(@PathVariable Integer idPoint) {
@@ -146,6 +150,5 @@ public class PointsController {
         poinser.delete(idPoint);
         return new ResponseEntity<>("Points deleted successfully", HttpStatus.OK);
     }
-
 
 }

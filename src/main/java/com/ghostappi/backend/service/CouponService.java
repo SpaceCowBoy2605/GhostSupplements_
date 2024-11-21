@@ -26,8 +26,8 @@ public class CouponService {
 		return repo.findAll();
 	}
 
-	public void save(Coupon coupon) {
-		repo.save(coupon);
+	public Coupon save(Coupon coupon) {
+		return repo.save(coupon);
 	}
 
 	public Coupon getByidCoupon(Integer idCoupon) {

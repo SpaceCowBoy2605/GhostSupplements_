@@ -2,7 +2,10 @@ package com.ghostappi.backend.service;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.ghostappi.backend.model.AdministrationVia;
@@ -17,8 +20,10 @@ public class AdministrationViaService {
     @Autowired
     private AdministrationViaRepository administrationViaRepository;
     
-    public List<AdministrationVia> getAll() {
-        return administrationViaRepository.findAll();
+    public List<AdministrationVia> getAll(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<AdministrationVia> administrationVias = administrationViaRepository.findAll(pageable);
+        return administrationVias.getContent();
     }
 
     public AdministrationVia save (AdministrationVia administrationVia) {
