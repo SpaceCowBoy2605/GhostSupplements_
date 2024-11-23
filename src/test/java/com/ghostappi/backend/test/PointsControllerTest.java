@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ghostappi.backend.controller.PointsController;
+//import com.ghostappi.backend.controller.PointsController;
 import com.ghostappi.backend.model.Points;
 
 
@@ -31,8 +31,8 @@ public class PointsControllerTest {
      @Autowired
     private MockMvc mvc;
 
-    @Autowired
-     private PointsController pointsController;
+    // @Autowired
+    //  private PointsController pointsController;
 
     @Autowired
     private ObjectMapper objectMapper;
