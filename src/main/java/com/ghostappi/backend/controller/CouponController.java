@@ -1,11 +1,15 @@
 package com.ghostappi.backend.controller;
 
 import java.util.List;
+
 import java.util.NoSuchElementException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.ghostappi.backend.service.CouponService;
+import com.ghostappi.backend.dto.CouponDTO;
 import com.ghostappi.backend.model.Coupon;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -25,19 +30,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
+@Validated
 @RequestMapping("coupons")
 @CrossOrigin(origins = "*")
 @Tag(name = "Coupons", description="Provides methods for managing coupons")
 public class CouponController {
 	@Autowired
 	private CouponService service;
+	@Autowired
+	private ModelMapper modelMapper;
 
 	/*@Operation(summary = "Get all coupons")
 	@ApiResponse(responseCode = "200", description = "Found Coupons", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Coupon.class))) })
-	@GetMapping
+	@GetMapping	
 	public List<Coupon> getAll() {
 		return service.getAll();
 	}*/
@@ -69,13 +78,21 @@ public class CouponController {
 	}
 
 	@Operation(summary = "Register a coupon ")
+    @ApiResponse(responseCode = "200", description = "Registered coupon", content = {
+		@Content(mediaType = "application/json", array =@ArraySchema(schema = @Schema(implementation = Coupon.class))) })
 	@PostMapping
-	public ResponseEntity<?> register(@RequestBody Coupon coupon) {
-		service.save(coupon);
-		return new ResponseEntity<String>("Saved record", HttpStatus.OK);
+	public ResponseEntity<CouponDTO> register(@Valid @RequestBody CouponDTO couponDTO) {
+		CouponDTO saveCoupon = convertToDTO(service.save(convertToEntity(couponDTO)));
+		return new ResponseEntity<>(saveCoupon, HttpStatus.OK);
 	}
-
+	private CouponDTO convertToDTO(Coupon coupon){
+		return modelMapper.map(coupon, CouponDTO.class);
+	}
+	public Coupon convertToEntity(CouponDTO couponDTO){
+		return modelMapper.map(couponDTO, Coupon.class);
+	}
 	@Operation(summary = "Update a coupon with his id")
+    
 	@PutMapping("{idCoupon}")
 	public ResponseEntity<?> update(@RequestBody Coupon coupon, @PathVariable Integer idCoupon) {
 		Coupon auxCoupon = service.getByidCoupon(idCoupon);

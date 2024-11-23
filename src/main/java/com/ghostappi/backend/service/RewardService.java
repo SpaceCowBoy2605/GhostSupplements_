@@ -1,14 +1,14 @@
 package com.ghostappi.backend.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-	import com.ghostappi.backend.model.Reward;
+import com.ghostappi.backend.model.Reward;
 	import com.ghostappi.backend.repository.RewardRepository;
 
-import jakarta.transaction.Transactional;
+	import jakarta.transaction.Transactional;
 
     @Service
     @Transactional
@@ -16,8 +16,8 @@ import jakarta.transaction.Transactional;
     @Autowired
     private RewardRepository rewardpor;
 
-    public List<Reward> getAll(){
-        return rewardpor.findAll();
+    public Page<Reward> getAll(Pageable pageable){
+        return rewardpor.findAll(pageable);
     }
 
     public void save(Reward rew){

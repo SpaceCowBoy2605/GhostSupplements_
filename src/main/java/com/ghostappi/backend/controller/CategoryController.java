@@ -27,70 +27,72 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequestMapping("categories")
 @CrossOrigin(origins = "*", methods = {
-        RequestMethod.GET,
-        RequestMethod.POST,
-        RequestMethod.PUT,
-        RequestMethod.DELETE })
-@Tag(name = "Categories", description = "Methods required to manage categories")
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.DELETE })
+@Tag(name = "Categories", description = "Provides methods for managing categories")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService service;
+        @Autowired
+        private CategoryService service;
 
-    @Operation(summary = "List all categories")
-    @ApiResponse(responseCode = "200", description = "Found all categories", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Category.class))) })
-    @GetMapping
-    public List<Category> getAll() {
-        return service.getAll();
-    }
-
-    @Operation(summary = "Create a new a category")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category created successfully", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "Nutrient not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Category already exists"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public void save(Category category) {
-        service.save(category);
-    }
-
-    @Operation(summary = "Get category by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category found", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
-            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
-    })
-    @GetMapping("{idCategory}")
-    public Category getById(@RequestParam Integer id) {
-        return service.getById(id);
-    }
-
-
-    @Operation(summary = "Update a category by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category found", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
-            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
-    })
-    @PutMapping("{idCategory}")
-    public ResponseEntity<Category> update(@PathVariable Integer idCategory, @RequestBody Category category) {
-        if (!Objects.equals(category.getIdCategory(), idCategory)) {
-            throw new IllegalArgumentException("The provider identifiers do not match");
+        @Operation(summary = "Get all categories with pagination", description = "Return a list of all categories with pagination")
+        @ApiResponse(responseCode = "200", description = "Found all categories", content = {
+                        @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Category.class))) })
+        @GetMapping(params = { "page", "size" })
+        public List<Category> getAll(
+                        @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                        @RequestParam(value = "size", defaultValue = "5", required = false) int size
+        ) {
+                List<Category> categories = service.getAll(page, size);
+                return categories;
         }
-        Category existingCategory = service.getById(idCategory);
-        existingCategory.setName(category.getName());
-        service.save(existingCategory);
-        return new ResponseEntity<>(existingCategory,HttpStatus.OK);
 
-    }
+        @Operation(summary = "Create a new a category")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Category created successfully", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Invalid input"),
+                        @ApiResponse(responseCode = "404", description = "Nutrient not found", content = @Content),
+                        @ApiResponse(responseCode = "409", description = "Category already exists"),
+                        @ApiResponse(responseCode = "500", description = "Internal server error")
+        })
+        public void save(Category category) {
+                service.save(category);
+        }
+
+        @Operation(summary = "Get category by id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Category found", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+                        @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
+        })
+        @GetMapping("{idCategory}")
+        public Category getById(@RequestParam Integer id) {
+                return service.getById(id);
+        }
+
+        @Operation(summary = "Update a category by id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Category found", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+                        @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
+        })
+        @PutMapping("{idCategory}")
+        public ResponseEntity<Category> update(@PathVariable Integer idCategory, @RequestBody Category category) {
+                if (!Objects.equals(category.getIdCategory(), idCategory)) {
+                        throw new IllegalArgumentException("The provider identifiers do not match");
+                }
+                Category existingCategory = service.getById(idCategory);
+                existingCategory.setName(category.getName());
+                service.save(existingCategory);
+                return new ResponseEntity<>(existingCategory, HttpStatus.OK);
+
+        }
 }

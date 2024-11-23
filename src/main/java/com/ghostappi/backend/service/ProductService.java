@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.ghostappi.backend.repository.ProductRepository;
@@ -19,8 +21,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> getAll() {
-        return productRepository.findAll();
+    public List<Product> getAll(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Product> pageResult = productRepository.findAll(pageRequest);
+        return pageResult.getContent();
     }
 
     public Product save (Product product) {

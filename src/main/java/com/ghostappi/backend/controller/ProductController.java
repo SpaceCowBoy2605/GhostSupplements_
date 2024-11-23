@@ -33,89 +33,91 @@ import com.ghostappi.backend.model.Product;
 @RestController
 @RequestMapping("/products")
 @CrossOrigin(origins = "*", methods = {
-        RequestMethod.GET,
-        RequestMethod.POST,
-        RequestMethod.DELETE,
-        RequestMethod.PUT
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.DELETE,
+                RequestMethod.PUT
 })
-@Tag(name = "Products", description = "Methods required to manage products")
+@Tag(name = "Products", description = "Provides methods for managing products")
 
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+        @Autowired
+        private ProductService productService;
 
-    @Operation(summary = "Get all products", description = "Get all products")
-    @ApiResponse(responseCode = "200", description = "Success", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Product.class)))
-    })
+        @Operation(summary = "Get all products with pagination", description = "Return a list of products with pagination")
+        @ApiResponse(responseCode = "200", description = "Success", content = {
+                        @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Product.class)))
+        })
 
-    @GetMapping
-    public List<Product> getAll() {
-        return productService.getAll();
-    }
-
-
-    @Operation(summary = "Get product by id", description = "Get product by id")
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Product not found" , content = @Content)
-    })
-    @GetMapping("{idProduct}")
-    public Product getById(@RequestParam Integer idProduct) {
-        return productService.getById(idProduct);
-    }
-
-    @Operation(summary = "Create a new Product", description = "Create a new Product")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Product created", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
-    })
-    @PostMapping
-    public ResponseEntity<String> save(@RequestBody Product product) {
-        productService.save(product);
-        return new ResponseEntity<>("Product created", HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Update a product", description = "Update a product")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product updated", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Nutrient not found", content = @Content)
-    })
-
-    @PutMapping("{idProduct}")
-    public ResponseEntity<Product> update (@RequestBody Product product, @PathVariable Integer idProduct) {
-        if(!Objects.equals(product.getIdProduct(), idProduct)){
-            throw new IllegalArgumentException("The provider identifiers do not match");
+        @GetMapping(params = { "page", "size" })
+        public List<Product> getAll(
+                        @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                        @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
+                List<Product> products = productService.getAll(page, size);
+                return products;
         }
-        Product productToUpdate = productService.getById(idProduct);
-        productToUpdate.setComercialName(product.getComercialName());
-        productToUpdate.setPrice(product.getPrice());
-        productToUpdate.setStock(product.getStock());
-        productToUpdate.setServingSize(product.getServingSize());
-        productToUpdate.setUnitServingSize(product.getUnitServingSize());
-        productToUpdate.setServings(product.getServings());
-        productToUpdate.setNetContent(product.getNetContent());
-        productToUpdate.setUnitNetContent(product.getUnitNetContent());
-        productToUpdate.setPresentation(product.getPresentation());
-        productToUpdate.setDescription(product.getDescription());
-        productToUpdate.setCaducity(product.getCaducity());
-        productToUpdate.setLote(product.getLote());
-        productToUpdate.setFlavor(product.getFlavor());
-        productToUpdate.setProductRecomendation(product.getProductRecomendation());
-        productToUpdate.setImgProductPath(product.getImgProductPath());
 
-        productService.save(productToUpdate);
-        return new ResponseEntity<>(productToUpdate, HttpStatus.OK);
+        @Operation(summary = "Get product by id", description = "Get product by id")
 
-    }
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Success", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                        }),
+                        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+                        @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+        })
+        @GetMapping("{idProduct}")
+        public Product getById(@RequestParam Integer idProduct) {
+                return productService.getById(idProduct);
+        }
+
+        @Operation(summary = "Create a new Product", description = "Create a new Product")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "Product created", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                        }),
+                        @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
+        })
+        @PostMapping
+        public ResponseEntity<String> save(@RequestBody Product product) {
+                productService.save(product);
+                return new ResponseEntity<>("Product created", HttpStatus.CREATED);
+        }
+
+        @Operation(summary = "Update a product", description = "Update a product")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Product updated", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))
+                        }),
+                        @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content),
+                        @ApiResponse(responseCode = "404", description = "Nutrient not found", content = @Content)
+        })
+
+        @PutMapping("{idProduct}")
+        public ResponseEntity<Product> update(@RequestBody Product product, @PathVariable Integer idProduct) {
+                if (!Objects.equals(product.getIdProduct(), idProduct)) {
+                        throw new IllegalArgumentException("The provider identifiers do not match");
+                }
+                Product productToUpdate = productService.getById(idProduct);
+                productToUpdate.setComercialName(product.getComercialName());
+                productToUpdate.setPrice(product.getPrice());
+                productToUpdate.setStock(product.getStock());
+                productToUpdate.setServingSize(product.getServingSize());
+                productToUpdate.setUnitServingSize(product.getUnitServingSize());
+                productToUpdate.setServings(product.getServings());
+                productToUpdate.setNetContent(product.getNetContent());
+                productToUpdate.setUnitNetContent(product.getUnitNetContent());
+                productToUpdate.setPresentation(product.getPresentation());
+                productToUpdate.setDescription(product.getDescription());
+                productToUpdate.setCaducity(product.getCaducity());
+                productToUpdate.setLote(product.getLote());
+                productToUpdate.setFlavor(product.getFlavor());
+                productToUpdate.setProductRecomendation(product.getProductRecomendation());
+                productToUpdate.setImgProductPath(product.getImgProductPath());
+
+                productService.save(productToUpdate);
+                return new ResponseEntity<>(productToUpdate, HttpStatus.OK);
+
+        }
 }

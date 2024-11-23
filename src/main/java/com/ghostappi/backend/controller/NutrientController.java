@@ -39,23 +39,26 @@ import com.ghostappi.backend.model.Nutrient;
         RequestMethod.PUT
 })
 
-@Tag(name = "Nutrients", description = "Methods required to manage nutrients")
+@Tag(name = "Nutrients", description = "Provides methods for managing nutrients")
 
 public class NutrientController {
 
     @Autowired
     private NutrientService nutrientService;
 
-    @Operation(summary = "Get all nutrients", description = "Get all nutrients from the database")
+    @Operation(summary = "Get all nutrients with pagination", description = "Return a list of all nutrients with pagination")
     @ApiResponse(responseCode = "200", description = "Success", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Nutrient.class)))
     })
 
-    @GetMapping
-    public List<Nutrient> getAll() {
-        return nutrientService.getAll();
+    @GetMapping(params = { "page", "size" })
+    public List<Nutrient> getAll(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "5", required = false) int size
+    ) {
+        List<Nutrient> nutrients = nutrientService.getAll(page, size);
+        return nutrients;
     }
-
 
     @Operation(summary = "Get nutrient by id", description = "Get nutrient by id from the database")
     @ApiResponses(value = {
@@ -70,21 +73,19 @@ public class NutrientController {
     public Nutrient getById(@RequestParam int idNutrient) {
         return nutrientService.getById(idNutrient);
     }
-    
 
     @Operation(summary = "Save nutrient", description = "Save nutrient in the database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Nutrient added", content = {  
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Nutrient.class)) }),
+            @ApiResponse(responseCode = "200", description = "Nutrient added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Nutrient.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid nutrient", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<String>save(@RequestBody Nutrient nutrient){
+    public ResponseEntity<String> save(@RequestBody Nutrient nutrient) {
         nutrientService.save(nutrient);
         return ResponseEntity.ok("Nutrient added");
     }
 
-    
     @Operation(summary = "Update a nutrient", description = "Update a nutrient in the database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Nutrient updated", content = {
@@ -94,8 +95,8 @@ public class NutrientController {
             @ApiResponse(responseCode = "404", description = "Nutrient not found", content = @Content)
     })
     @PutMapping("{idNutrient}")
-    public ResponseEntity<Nutrient> update(@RequestBody Nutrient nutrient ,@PathVariable Integer idNutrient) {
-        if(!Objects.equals(nutrient.getIdNutrient(), idNutrient)){
+    public ResponseEntity<Nutrient> update(@RequestBody Nutrient nutrient, @PathVariable Integer idNutrient) {
+        if (!Objects.equals(nutrient.getIdNutrient(), idNutrient)) {
             throw new IllegalArgumentException("The provider identifiers do not match");
         }
         Nutrient existingNutrient = nutrientService.getById(idNutrient);
@@ -103,5 +104,5 @@ public class NutrientController {
         nutrientService.save(existingNutrient);
         return new ResponseEntity<>(existingNutrient, HttpStatus.OK);
     }
-    
+
 }

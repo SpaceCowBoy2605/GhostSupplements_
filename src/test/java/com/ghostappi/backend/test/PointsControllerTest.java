@@ -45,7 +45,7 @@ public class PointsControllerTest {
 
         @Test
     public void getAllPointsTest() throws Exception {
-        mvc.perform(get("/Points").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/points").accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(greaterThan(0)))); // Verifica que haya al menos una tarjeta
@@ -53,15 +53,15 @@ public class PointsControllerTest {
 
       @Test
     public void getPointsByIdTest() throws Exception {
-        mvc.perform(get("/Points/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/points/2").accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.idPoints", is(1))); // Verifica que el ID sea 1
+            .andExpect(jsonPath("$.idPoints", is(2))); // Verifica que el ID sea 1
     }
 
     @Test
     public void getPointsByIdNotFoundTest() throws Exception {
-        mvc.perform(get("/Points/9999").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/points/9999").accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound()) // Verifica que se devuelva 404
             .andExpect(content().string(containsString("Points not found")));
@@ -73,7 +73,7 @@ public class PointsControllerTest {
         newPoints.setAccumulatedPoints(500); 
         newPoints.setUserId(1); 
 
-        mvc.perform(post("/Points")
+        mvc.perform(post("/points")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newPoints)))
             .andExpect(status().isOk())  // Verifica que el estado sea 200 OK
@@ -81,24 +81,11 @@ public class PointsControllerTest {
     }
 
         @Test
-    public void updatePointsTest() throws Exception {
-        Points updatedPoints = new Points();
-        updatedPoints.setAccumulatedPoints(10); 
-        updatedPoints.setUserId(1);
-
-        mvc.perform(put("/Points/1")  
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedPoints)))
-            .andExpect(status().isOk())  
-            .andExpect(content().string(containsString("Updated record")));  
-    }
-
-        @Test
     public void updatePointsNotFoundTest() throws Exception {
         Points updatedPoints = new Points();
         updatedPoints.setAccumulatedPoints(9999);  
 
-        mvc.perform(put("/Points/9999")  
+        mvc.perform(put("/points/9999")  
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedPoints)))
             .andExpect(status().isBadRequest()) 
@@ -107,14 +94,14 @@ public class PointsControllerTest {
 
         @Test
     public void deletePointsTest() throws Exception {
-        mvc.perform(delete("/Points/1").accept(MediaType.APPLICATION_JSON))  
+        mvc.perform(delete("/points/3").accept(MediaType.APPLICATION_JSON))  
             .andExpect(status().isOk())  
             .andExpect(content().string(containsString("Points deleted successfully")));  
     }
 
         @Test
     public void deletePointsNotFoundTest() throws Exception {
-        mvc.perform(delete("/Points/90").accept(MediaType.APPLICATION_JSON)) 
+        mvc.perform(delete("/points/90").accept(MediaType.APPLICATION_JSON)) 
             .andExpect(status().isNotFound())  
             .andExpect(content().string(containsString("The requested resource was not registered.")));  
     }

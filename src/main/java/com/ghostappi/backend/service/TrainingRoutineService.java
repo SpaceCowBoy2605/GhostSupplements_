@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -23,7 +26,7 @@ public class TrainingRoutineService {
     @Autowired
     private TrainingRoutineRepository repository;
 
-        @Autowired
+    @Autowired
     private TrainingRoutineRepository trainingRoutineRepository;
 
     @Autowired
@@ -32,30 +35,32 @@ public class TrainingRoutineService {
     @Autowired
     private ExcerciseRepository excerciseRepository;
 
-    
-    public List<TrainingRoutineDTO> getAll() {
-        List<TrainingRoutine> trainingRoutines = repository.findAll();
+    public List<TrainingRoutineDTO> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TrainingRoutine> trainingRoutinesPage = repository.findAll(pageable);
+        List<TrainingRoutine> trainingRoutines = trainingRoutinesPage.getContent();
+
         return trainingRoutines.stream()
-            .collect(Collectors.groupingBy(routine -> routine.getUser().getIdUser()))
-            .entrySet().stream()
-            .map(entry -> {
-                TrainingRoutineDTO dto = new TrainingRoutineDTO();
-                dto.setUserId(entry.getKey());
-                List<ExcerciseDTO> exercises = entry.getValue().stream()
-                    .map(routine -> {
-                        ExcerciseDTO exerciseDTO = new ExcerciseDTO();
-                        exerciseDTO.setIdExercise(routine.getExcercise().getIdExcercise());
-                        exerciseDTO.setName(routine.getExcercise().getName());
-                        exerciseDTO.setDifficulty(routine.getExcercise().getDifficulty());
-                        exerciseDTO.setReps(routine.getReps());
-                        exerciseDTO.setSets(routine.getSets());
-                        return exerciseDTO;
-                    })
-                    .collect(Collectors.toList());
-                dto.setExercises(exercises);
-                return dto;
-            })
-            .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(routine -> routine.getUser().getIdUser()))
+                .entrySet().stream()
+                .map(entry -> {
+                    TrainingRoutineDTO dto = new TrainingRoutineDTO();
+                    dto.setUserId(entry.getKey());
+                    List<ExcerciseDTO> exercises = entry.getValue().stream()
+                            .map(routine -> {
+                                ExcerciseDTO exerciseDTO = new ExcerciseDTO();
+                                exerciseDTO.setIdExercise(routine.getExcercise().getIdExcercise());
+                                exerciseDTO.setName(routine.getExcercise().getName());
+                                exerciseDTO.setDifficulty(routine.getExcercise().getDifficulty());
+                                exerciseDTO.setReps(routine.getReps());
+                                exerciseDTO.setSets(routine.getSets());
+                                return exerciseDTO;
+                            })
+                            .collect(Collectors.toList());
+                    dto.setExercises(exercises);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     public void save(TrainingRoutine trainingRoutine) {
@@ -63,8 +68,10 @@ public class TrainingRoutineService {
     }
 
     public void save(TrainingRoutineRequestDTO requestDTO) {
-        com.ghostappi.backend.model.User user = userRepository.findById(requestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-        Excercise excercise = excerciseRepository.findById(requestDTO.getExerciseId()).orElseThrow(() -> new RuntimeException("Exercise not found"));
+        com.ghostappi.backend.model.User user = userRepository.findById(requestDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Excercise excercise = excerciseRepository.findById(requestDTO.getExerciseId())
+                .orElseThrow(() -> new RuntimeException("Exercise not found"));
 
         TrainingRoutine trainingRoutine = new TrainingRoutine();
         trainingRoutine.setUser(user);
@@ -78,26 +85,26 @@ public class TrainingRoutineService {
     public List<TrainingRoutineDTO> getByUserId(Integer userId) {
         List<TrainingRoutine> trainingRoutines = repository.findAll();
         return trainingRoutines.stream()
-            .filter(routine -> routine.getUser().getIdUser().equals(userId))
-            .collect(Collectors.groupingBy(routine -> routine.getUser().getIdUser()))
-            .entrySet().stream()
-            .map(entry -> {
-                TrainingRoutineDTO dto = new TrainingRoutineDTO();
-                dto.setUserId(entry.getKey());
-                List<ExcerciseDTO> exercises = entry.getValue().stream()
-                    .map(routine -> {
-                        ExcerciseDTO exerciseDTO = new ExcerciseDTO();
-                        exerciseDTO.setIdExercise(routine.getExcercise().getIdExcercise());
-                        exerciseDTO.setName(routine.getExcercise().getName());
-                        exerciseDTO.setDifficulty(routine.getExcercise().getDifficulty());
-                        exerciseDTO.setReps(routine.getReps());
-                        exerciseDTO.setSets(routine.getSets());
-                        return exerciseDTO;
-                    })
-                    .collect(Collectors.toList());
-                dto.setExercises(exercises);
-                return dto;
-            })
-            .collect(Collectors.toList());
+                .filter(routine -> routine.getUser().getIdUser().equals(userId))
+                .collect(Collectors.groupingBy(routine -> routine.getUser().getIdUser()))
+                .entrySet().stream()
+                .map(entry -> {
+                    TrainingRoutineDTO dto = new TrainingRoutineDTO();
+                    dto.setUserId(entry.getKey());
+                    List<ExcerciseDTO> exercises = entry.getValue().stream()
+                            .map(routine -> {
+                                ExcerciseDTO exerciseDTO = new ExcerciseDTO();
+                                exerciseDTO.setIdExercise(routine.getExcercise().getIdExcercise());
+                                exerciseDTO.setName(routine.getExcercise().getName());
+                                exerciseDTO.setDifficulty(routine.getExcercise().getDifficulty());
+                                exerciseDTO.setReps(routine.getReps());
+                                exerciseDTO.setSets(routine.getSets());
+                                return exerciseDTO;
+                            })
+                            .collect(Collectors.toList());
+                    dto.setExercises(exercises);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

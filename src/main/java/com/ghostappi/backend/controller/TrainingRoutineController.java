@@ -24,56 +24,58 @@ import com.ghostappi.backend.dto.TrainingRoutineRequestDTO;
 import com.ghostappi.backend.service.TrainingRoutineService;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @RestController
 @RequestMapping("/trainingroutines")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
-@Tag(name = "Training Routines", description = "Provides a methods for managing training routines from the database")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE })
+@Tag(name = "Training Routines", description = "Provides methods for managing training routines")
 public class TrainingRoutineController {
 
     @Autowired
     private TrainingRoutineService service;
 
-    @Operation(summary = "Get all training routines from all users")
-    @ApiResponse(responseCode = "200", description = "Found all training routines from all users",
-            content = { @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TrainingRoutineDTO.class))) })
-    @GetMapping
-    public List<TrainingRoutineDTO> getAll() {
-        return service.getAll();
+    @Operation(summary = "Get all training routines from all users", description = "Get all training routines from all users with pagination")
+    @ApiResponse(responseCode = "200", description = "Found all training routines from all users", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TrainingRoutineDTO.class))) })
+    @GetMapping(params = { "page", "size" })
+    public List<TrainingRoutineDTO> getAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size) {
+        List<TrainingRoutineDTO> trainingRoutines = service.getAll(page, size);
+        return trainingRoutines;
     }
-
 
     @Operation(summary = "Get training routines by user ID")
-    @ApiResponse(responseCode = "200", description = "Found training routines for the specified user",
-            content = { @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TrainingRoutineDTO.class))) })
+    @ApiResponse(responseCode = "200", description = "Found training routines for the specified user", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TrainingRoutineDTO.class))) })
     @GetMapping("/user/{userId}")
-    public List<TrainingRoutineDTO> getByUserId(@RequestParam Integer id){
+    public List<TrainingRoutineDTO> getByUserId(@RequestParam Integer id) {
         return service.getByUserId(id);
     }
-    
 
     // @Operation(summary = "Save a training routine")
     // @ApiResponses( value ={
-    //     @ApiResponse(responseCode = "200", description = "Training routine saved successfully" ,content = { @Content(mediaType = "application/json" , schema = @Schema(implementation = TrainingRoutine.class)) }),
-    //     @ApiResponse(responseCode = "400", description = "Bad request")
+    // @ApiResponse(responseCode = "200", description = "Training routine saved
+    // successfully" ,content = { @Content(mediaType = "application/json" , schema =
+    // @Schema(implementation = TrainingRoutine.class)) }),
+    // @ApiResponse(responseCode = "400", description = "Bad request")
     // }
     // )
     // @PostMapping
     // public ResponseEntity<?> save(TrainingRoutine trainingRoutine) {
-    //     service.save(trainingRoutine);
-    //     return new ResponseEntity<>("Training routine saved successfully", HttpStatus.OK);
+    // service.save(trainingRoutine);
+    // return new ResponseEntity<>("Training routine saved successfully",
+    // HttpStatus.OK);
     // }
 
     @Operation(summary = "Save a training routine")
-    @ApiResponses(
-        value = {
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Training routine saved successfully", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = TrainingRoutineRequestDTO.class))
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = TrainingRoutineRequestDTO.class))
             })
-        }
-    )
+    })
     @PostMapping
-    public ResponseEntity<?> save(TrainingRoutineRequestDTO trainingRoutineRequestDTO){
+    public ResponseEntity<?> save(TrainingRoutineRequestDTO trainingRoutineRequestDTO) {
         service.save(trainingRoutineRequestDTO);
         return new ResponseEntity<>("Training routine saved successfully", HttpStatus.OK);
     }
