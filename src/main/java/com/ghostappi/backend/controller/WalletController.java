@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("wallets")
+@RequestMapping("/wallets")
 @CrossOrigin(origins="*", methods={RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Tag(name="Wallets", description="Provides methods for managing wallets")
 public class WalletController {
@@ -57,12 +57,6 @@ public class WalletController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
         }),
         @ApiResponse(responseCode = "404", description = "wallet not found, please verify your information"),
-        @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "Internal server error, please stand by", content = {
-            @Content
-        })
     })
 
     @GetMapping("{idWallet}")
@@ -76,13 +70,7 @@ public class WalletController {
         @ApiResponse(responseCode = "200", description = "User Found correctly", content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
         }),
-        @ApiResponse(responseCode = "404", description = "The user has no wallet"),
-        @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "Internal server error, please stand by", content = {
-            @Content
-        })
+        @ApiResponse(responseCode = "404", description = "The user has no wallet")
     })
       @GetMapping("/user/{userId}")
     public ResponseEntity<List<Wallet>> getWalletsByUserId(@PathVariable Integer userId) {
@@ -102,79 +90,13 @@ public class WalletController {
         }),
         @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
             @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-            @Content
         })
     })
        
    @PostMapping
     public ResponseEntity<String> createWallet(@Valid @RequestBody WalletDto walletDto) {
-        try {
             String result = wallser.save(walletDto);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error creating wallet: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
 
-/* 
-    //update
-    @Operation(summary = "Update an existing wallet")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Updated record", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Wallet.class))
-        }),
-        @ApiResponse(responseCode = "404", description = "Wallet with ID not found"),
-        @ApiResponse(responseCode = "400", description = "Invalid wallet data", content = {
-            @Content
-        }),
-        @ApiResponse(responseCode = "500", description = "An internal server error has occurred", content = {
-            @Content
-        })
-    })
-    @PutMapping("{idWallet}")
-    public ResponseEntity<?> update(@RequestBody Wallet wallet, @PathVariable Integer idWallet) {
-        try {
-        Wallet existingWallet = wallser.getIdWallet(idWallet);
-        wallet.setIdWallet(existingWallet.getIdWallet());  
-        wallser.save(wallet);
-        return new ResponseEntity<>("Updated record", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Updated record", HttpStatus.NOT_FOUND);
-        }
-       
-    }
-*/
-    //delete
-    // @Operation(summary = "Delete a wallet by ID")
-    // @ApiResponses(value = {
-    //     @ApiResponse(responseCode = "204", description = "The wallet has been successfully deleted."),
-    //     @ApiResponse(responseCode = "404", description = "Wallet with ID not found."),
-    //     @ApiResponse(responseCode = "400", description = "Invalid wallet ID.", content = {
-    //         @Content
-    //     }),
-    //     @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-    //         @Content
-    //     }),
-    //     @ApiResponse(responseCode = "401", description = "Unauthorized. Please log in and try again.", content = {
-    //         @Content
-    //     }),
-    //     @ApiResponse(responseCode = "403", description = "Forbidden. You do not have permission to perform this action.", content = {
-    //         @Content
-    //     })
-    // })
-    // @DeleteMapping("{idWallet}")
-    // public ResponseEntity<?> delete(@PathVariable Integer idWallet) {
-    //     try {
-    //         Wallet wallet = wallser.getIdWallet(idWallet); // Método que debes tener en tu servicio
-    //         if (wallet == null) {
-    //             return new ResponseEntity<>("Wallet with ID not found.", HttpStatus.NOT_FOUND);
-    //         }
-    //         wallser.delete(idWallet);
-    //         return new ResponseEntity<>("Wallet deleted successfully", HttpStatus.OK);
-    //     } catch (Exception e) {
-    //         return new ResponseEntity<>("Wallet with ID not found.", HttpStatus.NOT_FOUND);
-    //     }
-    // }
 }

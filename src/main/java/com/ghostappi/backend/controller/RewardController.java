@@ -31,11 +31,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-    @RestController
-    @RequestMapping("rewards")
-    @CrossOrigin(origins="*", methods= {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-    @Tag(name="Rewards", description="Provides methods for managing rewards")
-    public class RewardController {
+@RestController
+@RequestMapping("/rewards")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
+@Tag(name = "Rewards", description = "Provides methods for managing rewards")
+public class RewardController {
     @Autowired
     private RewardService rew;
 
@@ -51,116 +52,68 @@ import jakarta.validation.Valid;
         return new ResponseEntity<>(rewards.getContent(), HttpStatus.OK);
     }
 
-        // get
-            @Operation(summary = "Get reward by ID")
-            @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found reward", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))
-            }),
+    // get
+    @Operation(summary = "Get reward by ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found reward", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))
+        }),
             @ApiResponse(responseCode = "404", description = "reward not found, please verify your information"),
             @ApiResponse(responseCode = "400", description = "incorrectly entered data, verify the data", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "500", description = "Internal server error", content = {
-                @Content
-            })
+            @Content
         })
-
-        @GetMapping("{idReward}") 
-        public ResponseEntity<?>getIdReward(@PathVariable Integer idReward) {
-            try {
-                Reward reward = rew.getIdReward(idReward);
-                return new ResponseEntity<>(reward, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Reward not found", HttpStatus.NOT_FOUND);
-            }
-            
-        }
-
-        // post
-        @Operation(summary = "Register a new Reward")
-        @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The request has been successful and the product has been successfully created.", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "404", description = "reward not found", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-                @Content
-            })
-        })
-        @PostMapping
-        public ResponseEntity<?> register( @Valid @RequestBody Reward rews) {
-            try {
-                rew.save(rews);
-                return new ResponseEntity<>("Reward add correctly", HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("Reward not add, verify data", HttpStatus.NOT_FOUND);
-            }
-        }
-
-
-        //update 
-        @Operation(summary = "Update an existing reward")
-        @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Updated record", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))
-            }),
-            @ApiResponse(responseCode = "404", description = "reward with ID not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid reward data", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "500", description = "An internal server error has occurred", content = {
-                @Content
-            })
-        })
-        @PutMapping("{idReward}")
-        public ResponseEntity<?> update(@RequestBody Reward reward,@Valid @PathVariable Integer idReward) {
-            try {
-                Reward existingPro = rew.getIdReward(idReward);
-                reward.setIdReward(existingPro.getIdReward());  // Ensure id is not overwritten
-                rew.save(reward);
-                return new ResponseEntity<>("Updated record", HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>("information not found", HttpStatus.NOT_FOUND);
-            }
-        
-        }
-
-        //delete
-        @Operation(summary = "Delete a reward by ID")
-        @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "The reward has been successfully deleted."),
-            @ApiResponse(responseCode = "404", description = "Product with ID not found."),
-            @ApiResponse(responseCode = "400", description = "Invalid wallet ID.", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "500", description = "An internal server error has occurred. We are working to resolve the problem as soon as possible.", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "401", description = "Unauthorized. Please log in and try again.", content = {
-                @Content
-            }),
-            @ApiResponse(responseCode = "403", description = "Forbidden. You do not have permission to perform this action.", content = {
-                @Content
-            })
-        })
-        @DeleteMapping("{idReward}")
-        public ResponseEntity<?> delete(@PathVariable Integer idReward) {
-            try { 
-                Reward reward = rew.getIdReward(idReward);
-                if(reward == null){
-                    return new ResponseEntity<>("Reward with ID not found.", HttpStatus.NOT_FOUND);
-                }
-                rew.delete(idReward);
-                return new ResponseEntity<>("Reward deleted successfully", HttpStatus.OK); 
-            } catch (Exception e) {
-                return new ResponseEntity<>("Reward with ID not found.", HttpStatus.NOT_FOUND); 
-            }
-            
-        }
+    })
+    @GetMapping("{idReward}")
+    public ResponseEntity<?> getIdReward(@PathVariable Integer idReward) {
+        Reward reward = rew.getIdReward(idReward);
+        return new ResponseEntity<>(reward, HttpStatus.OK);
     }
+
+    // post
+    @Operation(summary = "Register a new Reward")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "The request has been successful and the product has been successfully created.", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))
+        }),
+        @ApiResponse(responseCode = "400", description = "Please verify the data entered and try again.", content = {
+            @Content
+        })
+    })
+    @PostMapping
+    public ResponseEntity<?> register(@Valid @RequestBody Reward rews) {
+        rew.save(rews);
+        return new ResponseEntity<>("Reward add correctly", HttpStatus.OK);
+    }
+
+    // update
+    @Operation(summary = "Update an existing reward")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Updated record", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))
+        }),
+            @ApiResponse(responseCode = "404", description = "reward with ID not found")
+    })
+    @PutMapping("{idReward}")
+    public ResponseEntity<?> update(@RequestBody Reward reward, @Valid @PathVariable Integer idReward) {
+        Reward existingPro = rew.getIdReward(idReward);
+        reward.setIdReward(existingPro.getIdReward());
+        rew.save(reward);
+        return new ResponseEntity<>("Updated record", HttpStatus.OK);
+    }
+
+    // delete
+    @Operation(summary = "Delete a reward by ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "The reward has been successfully deleted."),
+        @ApiResponse(responseCode = "404", description = "Product with ID not found."),
+    })
+    @DeleteMapping("{idReward}")
+    public ResponseEntity<?> delete(@PathVariable Integer idReward) {
+        Reward reward = rew.getIdReward(idReward);
+        if (reward == null) {
+            return new ResponseEntity<>("Reward with ID not found.", HttpStatus.NOT_FOUND);
+        }
+        rew.delete(idReward);
+        return new ResponseEntity<>("Reward deleted successfully", HttpStatus.OK);
+    }
+}
