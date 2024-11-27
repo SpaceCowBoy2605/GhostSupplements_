@@ -1,16 +1,25 @@
 package com.ghostappi.backend.model;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "User")  // Asegúrate de que el nombre de la tabla coincida exactamente
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +41,6 @@ public class User {
 
     @NotNull(message = "El correo no debe ser nulo")
     @NotEmpty(message = "El correo no debe estar vacío")
-    //@Email(message = "El correo debe tener un formato válido")
     @Size(max = 50, message = "El correo debe tener un máximo de 50 caracteres")
     @Column(nullable = false, length = 50)
     private String email;
@@ -100,6 +108,7 @@ public class User {
         this.email = email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -147,4 +156,19 @@ public class User {
     public void setIsCostumer(Boolean isCostumer) {
         this.isCostumer = isCostumer;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+    
+        return email;
+    }
+
+
+
+
 }
