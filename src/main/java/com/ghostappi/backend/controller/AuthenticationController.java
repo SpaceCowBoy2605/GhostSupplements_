@@ -1,8 +1,10 @@
 package com.ghostappi.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +15,7 @@ import com.ghostappi.backend.response.LoginResponse;
 import com.ghostappi.backend.service.AuthenticationService;
 import com.ghostappi.backend.util.JwtService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+// import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 
 @RestController
@@ -25,11 +27,11 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody UserDTO userDto) {
-        User registeredUser = authenticationService.signup(userDto);
-        return ResponseEntity.ok(registeredUser);
-    }
+@PostMapping("/signup")
+public ResponseEntity<String> register(@RequestBody UserDTO userDto) {
+    authenticationService.signup(userDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body("User successfully created");
+}
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody UserLoginDTO userLoginDto) {

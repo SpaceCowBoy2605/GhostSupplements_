@@ -28,10 +28,19 @@ public class AuthenticationService {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
         User user = new User();
+        user.setName(userDTO.getName());
+        user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setPhone(userDTO.getPhone());
+        user.setGender(userDTO.getGender());
+        user.setStatus(userDTO.getStatus());
+        user.setBornDate(userDTO.getBornDate());
+        user.setIsCostumer(userDTO.getIsCostumer());
         return userRepository.save(user);
     }
+
+    //passwordEncoder.encode
 
     public User authenticate(UserLoginDTO userDTO) {
         authenticationManager.authenticate(

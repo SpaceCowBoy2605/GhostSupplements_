@@ -47,8 +47,8 @@ public class User implements UserDetails {
 
     @NotNull(message = "La contraseña no debe ser nula")
     @NotEmpty(message = "La contraseña no debe estar vacía")
-    @Size(min = 6, max = 30, message = "La contraseña debe tener entre 6 y 30 caracteres")
-    @Column(nullable = false, length = 30)
+    @Size(min = 6, max = 100, message = "La contraseña debe tener entre 6 y 30 caracteres")
+    @Column(nullable = false, length = 100)
     private String password;
 
     @NotNull(message = "El teléfono no debe ser nulo")
