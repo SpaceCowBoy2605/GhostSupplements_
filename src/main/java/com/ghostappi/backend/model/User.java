@@ -1,9 +1,11 @@
 package com.ghostappi.backend.model;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
@@ -18,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "User")  // Asegúrate de que el nombre de la tabla coincida exactamente
+@Table(name = "User")
 public class User implements UserDetails {
 
     @Id
@@ -75,7 +77,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Boolean isCostumer;
 
-    // Getters y Setters
+    @NotNull(message = "El rol no debe ser nulo")
+    @Column(nullable = false, length = 255)
+    private String role;
+
     public Integer getIdUser() {
         return idUser;
     }
@@ -157,18 +162,41 @@ public class User implements UserDetails {
         this.isCostumer = isCostumer;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
     public String getUsername() {
-    
         return email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role));
+    }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status != null && status;
+    }
 }

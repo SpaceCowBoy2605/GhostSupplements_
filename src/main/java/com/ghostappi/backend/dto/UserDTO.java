@@ -3,6 +3,7 @@ package com.ghostappi.backend.dto;
 import java.util.Date;
 
 public class UserDTO {
+    private Integer idUser;
     private String name;
     private String lastName;
     private String email;
@@ -12,7 +13,23 @@ public class UserDTO {
     private Boolean status;
     private Date bornDate;
     private Boolean isCostumer;
+    private String role;
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Integer getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
     public String getEmail() {
         return email;
     }

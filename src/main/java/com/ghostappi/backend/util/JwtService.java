@@ -18,7 +18,8 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-        @Value("${security.jwt.secret-key}")
+
+    @Value("${security.jwt.secret-key}")
     private String secretKey;
 
     @Value("${security.jwt.expiration-time}")
@@ -45,10 +46,7 @@ public class JwtService {
         return jwtExpiration;
     }
 
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration) {
+    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
         return Jwts
                 .builder()
                 .claims(extraClaims)
@@ -73,12 +71,11 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parser()
-                .verifyWith(getSignInKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        return Jwts.parser()
+        .verifyWith(getSignInKey())
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
     }
 
     private SecretKey getSignInKey() {

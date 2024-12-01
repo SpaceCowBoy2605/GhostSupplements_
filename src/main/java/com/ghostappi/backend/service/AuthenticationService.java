@@ -24,19 +24,9 @@ public class AuthenticationService {
     private AuthenticationManager authenticationManager;
 
     public User signup(UserDTO userDTO) {
-        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty");
-        }
         User user = new User();
-        user.setName(userDTO.getName());
-        user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setPhone(userDTO.getPhone());
-        user.setGender(userDTO.getGender());
-        user.setStatus(userDTO.getStatus());
-        user.setBornDate(userDTO.getBornDate());
-        user.setIsCostumer(userDTO.getIsCostumer());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));  
         return userRepository.save(user);
     }
 

@@ -10,46 +10,37 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
-
-@OpenAPIDefinition(info = @Info(title = "Ghost Supplements API", version = "v1"), security = @SecurityRequirement(name = "bearerAuth"))
-@SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
+@Autowired
     private AuthenticationProvider authenticationProvider;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+        // @Autowired
+        // private AuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    @SuppressWarnings("removal")
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/login/**", "/swagger-ui/**", "/v3/api-docs/**",
-                                "/doc/swagger-ui/index.html#")
-                        .permitAll()
-                        .requestMatchers("/products/**",
-                                "/wallets/**")
-                        .hasRole("Cliente")
-                        .anyRequest().authenticated())
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin()
-                .successHandler(customAuthenticationSuccessHandler);
-
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/auth/**").permitAll()
+                            // .requestMatchers("/fabrictypes/**").hasAuthority("ROLE_USER")
+                            // .requestMatchers("/opinions/**").hasAuthority("ROLE_ADMIN")
+                            // .requestMatchers("/fabrictypes/**").hasRole("USER")
+                            .requestMatchers("/products/**").hasRole("USER")
+                             .requestMatchers("/nutrients/**").hasRole("ADMIN")
+                            .anyRequest().authenticated())
+                    .authenticationProvider(authenticationProvider)
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            return http.build();
+        }
 }
+
+
+
