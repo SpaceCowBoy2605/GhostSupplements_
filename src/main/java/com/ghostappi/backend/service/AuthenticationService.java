@@ -25,8 +25,16 @@ public class AuthenticationService {
 
     public User signup(UserDTO userDTO) {
         User user = new User();
+        user.setName(userDTO.getName());
+        user.setLastName(userDTO.getLastName());
+        user.setPhone(userDTO.getPhone());
+        user.setGender(userDTO.getGender());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));  
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); 
+        user.setStatus(userDTO.getStatus()); 
+        user.setBornDate(userDTO.getBornDate());
+        user.setIsCostumer(userDTO.getIsCostumer());
+        user.setRole(userDTO.getRole());
         return userRepository.save(user);
     }
 

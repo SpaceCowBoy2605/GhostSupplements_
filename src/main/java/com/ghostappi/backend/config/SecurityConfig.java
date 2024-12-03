@@ -30,12 +30,13 @@ public class SecurityConfig {
                     .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/auth/**").permitAll()
-                            // .requestMatchers("/fabrictypes/**").hasAuthority("ROLE_USER")
-                            // .requestMatchers("/opinions/**").hasAuthority("ROLE_ADMIN")
-                            // .requestMatchers("/fabrictypes/**").hasRole("USER")
+                            .requestMatchers("/login", "/oauth2/**", "/login/oauth2/**").permitAll()
                             .requestMatchers("/products/**").hasRole("USER")
                              .requestMatchers("/nutrients/**").hasRole("ADMIN")
                             .anyRequest().authenticated())
+                             .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("http://localhost:8080/doc/swagger-ui/index.html#/", true)                                                  
+                        .failureUrl("/login?error=true"))
                     .authenticationProvider(authenticationProvider)
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
             return http.build();
