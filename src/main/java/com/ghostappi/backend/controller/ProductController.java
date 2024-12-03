@@ -4,20 +4,21 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ghostappi.backend.model.Product;
+import com.ghostappi.backend.service.ProductService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,9 +27,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import com.ghostappi.backend.service.ProductService;
-import com.ghostappi.backend.model.Product;
 
 @RestController
 @RequestMapping("/products")
@@ -49,7 +47,6 @@ public class ProductController {
         @ApiResponse(responseCode = "200", description = "Success", content = {
                         @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Product.class)))
         })
-
         @GetMapping(params = { "page", "size" })
         public List<Product> getAll(
                         @RequestParam(value = "page", defaultValue = "0", required = false) int page,
@@ -67,6 +64,7 @@ public class ProductController {
                         @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
                         @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
         })
+        // @SecurityRequirement(name = "bearerAuth")
         @GetMapping("{idProduct}")
         public Product getById(@RequestParam Integer idProduct) {
                 return productService.getById(idProduct);
@@ -79,6 +77,7 @@ public class ProductController {
                         }),
                         @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
         })
+        // @SecurityRequirement(name = "bearerAuth")
         @PostMapping
         public ResponseEntity<String> save(@RequestBody Product product) {
                 productService.save(product);
@@ -93,7 +92,7 @@ public class ProductController {
                         @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content),
                         @ApiResponse(responseCode = "404", description = "Nutrient not found", content = @Content)
         })
-
+        // @SecurityRequirement(name = "bearerAuth")
         @PutMapping("{idProduct}")
         public ResponseEntity<Product> update(@RequestBody Product product, @PathVariable Integer idProduct) {
                 if (!Objects.equals(product.getIdProduct(), idProduct)) {

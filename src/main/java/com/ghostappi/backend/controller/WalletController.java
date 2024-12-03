@@ -92,7 +92,8 @@ public class WalletController {
             @Content
         })
     })
-       
+   
+
    @PostMapping
     public ResponseEntity<String> createWallet(@Valid @RequestBody WalletDto walletDto) {
             String result = wallser.save(walletDto);
