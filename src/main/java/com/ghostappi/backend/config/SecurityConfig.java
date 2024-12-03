@@ -35,7 +35,7 @@ public class SecurityConfig {
                              .requestMatchers("/nutrients/**").hasRole("ADMIN")
                             .anyRequest().authenticated())
                              .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("http://localhost:8080/doc/swagger-ui/index.html#/", true)                                                  
+                        .defaultSuccessUrl("https://ghostsupplements.onrender.com", true)                                                  
                         .failureUrl("/login?error=true"))
                     .authenticationProvider(authenticationProvider)
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
