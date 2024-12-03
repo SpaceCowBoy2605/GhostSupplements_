@@ -1,4 +1,4 @@
-FROM: Ubuntu latest as build
+FROM Ubuntu: latest as build
 RUN  apt-get  update
 COPY . .
 RUN ./grandlew bootJar --n-daemon
