@@ -1,6 +1,7 @@
 FROM ubuntu:latest as build
 RUN apt-get update
 COPY . .
+RUN chmod +x gradlew
 RUN ./gradlew bootJar --no-daemon
 
 FROM openjdk:21-jdk-slim
